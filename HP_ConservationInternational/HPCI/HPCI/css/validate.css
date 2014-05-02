@@ -1,0 +1,106 @@
+﻿
+#conditionselection {
+    
+    
+    height:525px;
+    width:900px;
+    background-color:gray;
+    top:100px;
+    left:50%;
+    margin-left:-450px;
+    border-radius:4px;
+    z-index:10;
+    padding-top:2%;
+    
+   
+
+}
+
+#conditionselection label {
+    color:black;
+    font-weight:400;
+} 
+
+#conditionselection h3{
+  
+    text-align:center;
+    font-size:14pt;
+    color:black;
+}
+
+    
+#conditionselection input[type="button"] {
+    float:right;
+    margin-right:2%;
+    background-color:black;
+
+    
+}
+
+#conditionselection_done input {
+    background-color:black;
+}
+
+
+#conditionselection div  {
+    padding-top:3%;
+    margin:0 auto;
+    width:450px;
+    float:left;
+    vertical-align:middle;
+}
+#conditionselection input[type="checkbox"]{
+    padding-left:30%;
+}
+
+
+#deadselection {
+    
+    
+    height:750px;
+    width:1200px;
+    background-color:gray;
+    top:13px;
+    left:50%;
+    margin-left:-600px;
+    border-radius:4px;
+    z-index:10;
+    padding-top:2%;
+   
+
+}
+
+#deadselection h3{
+  
+    text-align:center;
+    font-size:14pt;
+}
+
+    
+#deadselection input[type="button"] {
+    float:right;
+    margin-right:2%;
+    background-color:black;
+
+    
+}
+
+#deadselection_done input {
+    background-color:black;
+}
+
+
+#deadselection div  {
+    padding-top:3%;
+    margin:0 auto;
+    width:600px;
+    float:left;
+    vertical-align:middle;
+}
+#deadselection input[type="checkbox"]{
+    padding-left:30%;
+}
+
+    
+    
+	

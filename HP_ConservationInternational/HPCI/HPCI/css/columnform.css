@@ -1,0 +1,119 @@
+﻿#contactform{
+width: 100%;
+
+}
+
+
+#contactform input, #contactform textarea{
+width: 70%;
+
+}
+
+#contactform textarea{
+resize:vertical; /* allow vertical resize of textarea */
+height: 100px;
+}
+
+
+#contactform input:focus, #contactform textarea:focus{
+
+}
+
+
+#contactform input[type="radio"], #contactform input[type="checkbox"]{
+padding: 0;
+width: auto;
+height: auto;
+border-radius: 0;
+}
+
+#contactform select{
+width: 80%;
+
+}
+
+
+#contactform .formcolumn{ /* column div inside form */
+width: 33.33%;
+float: left;
+height:100%;
+
+}
+
+
+.formcolumn {
+   
+    text-align:center;
+   
+}
+
+.formcolumn label {
+
+    text-align:left;
+     padding-left:14.2%;
+}
+
+.formcolumn h2 {
+    padding-bottom:5%;
+}
+
+
+#contactform .formcolumn:first-of-type{
+ /* 2% margin after first column */
+}
+
+#contactform .formcolumn label, #contactform .formcolumn fieldset{
+
+display: block;
+margin-top: 2em;
+
+}
+
+#contactform .formcolumn label:first-child, #contactform .formcolumn fieldset:first-child{
+margin-top: 0; /* first label or fieldset within each column should not no top margin */
+}
+
+#contactform fieldset ul{
+list-type: none;
+margin: 0;
+padding: 0;
+}
+
+#contactform fieldset ul li{
+display: inline-block;
+margin-bottom: 5px;
+
+}
+
+#contactform div.buttons{
+clear: both;
+text-align: center;
+}
+
+@media screen and (max-width: 480px){ /* responsive form settings, when window width is 480px or less */
+
+	#contactform{
+	
+	}
+
+	#contactform .formcolumn{
+	width: 100%;
+	float: none;
+	}
+	
+	#contactform .formcolumn:first-of-type{
+	margin-right: 0; /* remove right margin from first form column */
+	}
+
+	#contactform .formcolumn:nth-of-type(2){
+	padding-top: 2em; /* add padding to top of 2nd form column, so there is a gap between the 1st and 2nd column */
+	}
+
+	#contactform select{
+	width: 98%;
+	}
+
+}
+
+
+

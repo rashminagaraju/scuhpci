@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>df16fbe4-bd57-409f-a2ef-0d632eeb4c74</ProjectGuid>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0'">
+    <VisualStudioVersion>11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).Default.props" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).props" />
+  <PropertyGroup>
+    <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <PackageCertificateKeyFile>HPCI_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxPackageDir>E:\HPCI-App\</AppxPackageDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppxManifest Include="package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <Content Include="about.html" />
+    <Content Include="css\font_instal.css" />
+    <Content Include="css\jqueryui.css" />
+    <Content Include="fonts\hps-euro-w01-bold-eot.eot" />
+    <Content Include="fonts\hps-euro-w01-bold-woff.woff" />
+    <Content Include="fonts\hpsimplified_lt_2-webfont.eot" />
+    <Content Include="fonts\hpsimplified_lt_2-webfont.svg" />
+    <Content Include="fonts\hpsimplified_lt_2-webfont.ttf" />
+    <Content Include="fonts\hpsimplified_lt_2-webfont.woff" />
+    <Content Include="fonts\hpsimplified_rg_2-webfont.eot" />
+    <Content Include="fonts\hpsimplified_rg_2-webfont.svg" />
+    <Content Include="fonts\hpsimplified_rg_2-webfont.ttf" />
+    <Content Include="fonts\hpsimplified_rg_2-webfont.woff" />
+    <Content Include="images\25.png" />
+    <Content Include="images\486.gif" />
+    <Content Include="images\ajax-loader.gif" />
+    <Content Include="images\forestimage_final.png" />
+    <Content Include="images\CI_Logo_Standard_English_French.png" />
+    <Content Include="images\conservationinternational.png" />
+    <Content Include="images\elephants.png" />
+    <Content Include="images\forestimage.png" />
+    <Content Include="images\forestimage_t.png" />
+    <Content Include="images\forestimage_v.png" />
+    <Content Include="images\Frugal_Blk_BriteRed300dpi.jpg" />
+    <Content Include="images\HP_Blue_RGB_150_LG.png" />
+    <Content Include="images\HP_Blue_RGB_150_MD.png" />
+    <Content Include="images\HP_Blue_RGB_150_MN.png" />
+    <Content Include="images\HP_Blue_RGB_150_MX.png" />
+    <Content Include="images\HP_Blue_RGB_150_SM.png" />
+    <Content Include="images\HP_New_Logo_2D.svg.png" />
+    <Content Include="images\image1.png" />
+    <Content Include="images\image2.png" />
+    <Content Include="images\image3.png" />
+    <Content Include="images\image4.png" />
+    <Content Include="images\image5.png" />
+    <Content Include="images\image6.png" />
+    <Content Include="images\image7.png" />
+    <Content Include="images\image8.png" />
+    <Content Include="images\image9.png" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\logo_team.png" />
+    <Content Include="images\progress_bar.gif" />
+    <Content Include="images\progress_bar_small.gif" />
+    <Content Include="images\SCU-Seal_Outlined_K.gif" />
+    <Content Include="images\scuFrugalInnovationLabLogo.jpg" />
+    <Content Include="images\scuLogo.jpg" />
+    <Content Include="images\ui-icons_222222_256x240.png" />
+    <Content Include="images\ui-icons_454545_256x240.png" />
+    <Content Include="js\autocomplete.js" />
+    <Content Include="js\censusCommon.js" />
+    <Content Include="js\importExportCommon.js" />
+    <Content Include="js\jqueryui.js" />
+    <Content Include="js\metadatacommon.js" />
+    <Content Include="js\MSGestures.js" />
+    <Content Include="js\raphael-min.js" />
+    <Content Include="js\utils.js" />
+    <Content Include="plotview.html" />
+    <Content Include="rcselection.html" />
+    <Content Include="recensusform.html" />
+    <Content Include="css\columnform.css" />
+    <Content Include="css\cordova.js" />
+    <Content Include="css\default.css" />
+    <Content Include="css\forms.css" />
+    <Content Include="css\grids.css" />
+    <Content Include="css\jquery.handsontable.full.css" />
+    <Content Include="css\jquery.mobile-1.1.2.css" />
+    <Content Include="css\jquery.mobile-1.2.1.css" />
+    <Content Include="css\jquery.mobile-1.2.1.min.css" />
+    <Content Include="css\jquery.mobile-1.3.1.css" />
+    <Content Include="css\jquery.mobile-1.3.1.min.css" />
+    <Content Include="css\jquery.mobile.structure-1.2.1.css" />
+    <Content Include="css\jquery.mobile.structure-1.2.1.min.css" />
+    <Content Include="css\jquery.mobile.structure-1.3.1.css" />
+    <Content Include="css\jquery.mobile.structure-1.3.1.min.css" />
+    <Content Include="css\jquery.mobile.theme-1.2.1.css" />
+    <Content Include="css\jquery.mobile.theme-1.2.1.min.css" />
+    <Content Include="css\jquery.mobile.theme-1.3.1.css" />
+    <Content Include="css\jquery.mobile.theme-1.3.1.min.css" />
+    <Content Include="css\stylesheet.css" />
+    <Content Include="css\validate.css" />
+    <Content Include="exportforms.html" />
+    <Content Include="images\1195729_300.jpg" />
+    <Content Include="images\1195729_300.scale-100.png" />
+    <Content Include="images\1195729_300.scale-140.png" />
+    <Content Include="images\1195729_300.scale-180.png" />
+    <Content Include="images\1195729_300.scale-80.png" />
+    <Content Include="images\ci_150.png" />
+    <Content Include="images\ci_270.png" />
+    <Content Include="images\ci_50.png" />
+    <Content Include="images\ci_90.png" />
+    <Content Include="images\logo.scale-100.png" />
+    <Content Include="images\logo.scale-180.png" />
+    <Content Include="images\logo_ci-jpg.png" />
+    <Content Include="images\storelogo.scale-100.png" />
+    <Content Include="images\storelogo.scale-140.png" />
+    <Content Include="images\storelogo.scale-180.png" />
+    <Content Include="importforms.html" />
+    <Content Include="index.html" />
+    <Content Include="images\logo.png" />
+    <Content Include="images\smalllogo.png" />
+    <Content Include="images\splashscreen.png" />
+    <Content Include="images\storelogo.png" />
+    <Content Include="js\cordova.js" />
+    <Content Include="js\default.js" />
+    <Content Include="js\idbstore.js" />
+    <Content Include="js\jquery-1.10.2.js" />
+    <Content Include="js\jquery-1.8.0-windows8-ready.js" />
+    <Content Include="js\jquery-1.9.1.min.js" />
+    <Content Include="js\jquery-2.0.0.js" />
+    <Content Include="js\jquery-2.0.3.js" />
+    <Content Include="js\jquery.handsontable.full.js" />
+    <Content Include="js\jquery.mobile-1.1.2.js" />
+    <Content Include="js\jquery.mobile-1.2.1.js" />
+    <Content Include="js\jquery.mobile-1.2.1.min.js" />
+    <Content Include="js\jquery.mobile-1.3.1.js" />
+    <Content Include="js\jquery.mobile-1.3.1.min.js" />
+    <Content Include="js\vegcensusstore.js" />
+    <Content Include="js\validate.js" />
+    <Content Include="censusform.html" />
+    <Content Include="displayImportedForms.html" />
+    <Content Include="importforms.html" />
+    <Content Include="review.html" />
+    <Content Include="scrapcontent.html" />
+    <Content Include="subplot_visualmap.html" />
+    <None Include="HPCI_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.WinJS.1.0, Version=1.0" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
+  <!-- To modify your build process, add your task inside one of the targets below then uncomment
+       that target and the DisableFastUpToDateCheck PropertyGroup. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <PropertyGroup>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+  -->
+</Project>

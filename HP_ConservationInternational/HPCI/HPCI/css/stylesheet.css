@@ -1,0 +1,686 @@
+﻿body h2 {
+    font-weight: 600;
+}
+
+body {
+    background-color: white;
+    color: black;
+}
+
+button, button[type="submit"]{
+    background-color: #0096d6;
+    border-color: white;
+    color: white;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+    button:hover,button[type="submit"]:hover {
+        background: #069;
+    }
+
+
+#wrapper {
+    width: 100%;
+    min-height: 100%;
+}
+
+    #wrapper a {
+         color:#0096d6;
+    }
+
+    #wrapper input {
+        background-color: white;
+        color: black;
+        border: 2px solid #cccccc;
+    }
+
+        #wrapper input[type="file"] {
+            background-color:#999;
+        }
+
+    #wrapper select:disabled {
+        border-color: #cccccc;
+        background-color: lightblue;
+        color: black;
+    }
+
+    #wrapper select:enabled {
+        border-color: #cccccc;
+        background-color: white;
+    }
+
+    #wrapper button:disabled {
+        background-color: #999;
+    }
+
+    #wrapper input[type="radio"]:enabled {
+        color: black;
+        border-color: black;
+        border: 1px solid #CCCCCC;
+    }
+
+    #wrapper input[type="text"]:disabled {
+        background-color: lightblue;
+        color: black;
+    }
+
+
+.header {
+    padding-top: 0px;
+}
+
+    .header div {
+        width: 33%;
+        float: left;
+    }
+
+#time {
+    background-color: brown;
+    font-size: 14pt;
+}
+
+.title {
+    text-align: center;
+    height:15%;
+    background-color:red;
+    
+
+   
+}
+
+    .title div {
+        border-bottom:1px solid #999;
+       height:104px;
+    }
+
+#elephantimage {
+    width: 33.33%;
+    float: left;
+  
+}
+
+    #elephantimage img {
+       /** opacity: 0.8;*/
+        width:60%;
+    }
+
+#timestamp {
+    width: 33.33%;
+    float: left;
+ 
+    text-align:right;
+}
+
+    #timestamp img {
+        padding:2%;
+        padding-right: 3%;
+        
+    }
+
+#homebutton {
+    float: left;
+    width: 33.33%;
+    text-align: left;
+}
+
+    #homebutton button {
+       
+        margin-left: 3%;
+        margin-top: 2%;
+    }
+    #homebutton h1 span {
+        display:block;
+        font-size:16px;
+        font-weight:normal;
+        color: #919090;
+        font-family: "hp_simplifiedregular",Arial, Helvetica, sans-serif;
+        padding-left:1px;
+    }
+    #homebutton h1 {
+        padding-left:3%;
+        margin-top:2%;
+        font-size:24px;
+        line-height:1.1;
+        font-weight:bold;
+        font-family: 'hp_simplifiedbold';
+    }
+
+#aboutBody  {
+    width:100%;
+    height:100%;
+   
+    
+  
+}
+
+
+
+#aboutBody div {
+    padding-top:2%;
+    width:80%;
+    margin:0 auto;
+}
+
+#stakeholderLogos img{
+    padding:1%;
+}
+
+#subtitle {
+    padding-top: 20px;
+}
+
+fieldset {
+    border: 0px;
+    height: 100%;
+}
+
+#option_button {
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 10%;
+}
+
+    #option_button button {
+        width: 200px;
+        height: 200px;
+        font-size: 16pt;
+        text-align: center;
+    }
+
+.stacking {
+}
+
+#savingprogressbar {
+    background-color: gray;
+    border-radius: 5px;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    z-index: 10;
+}
+
+    #savingprogressbar img {
+        padding-top: 40%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        vertical-align: middle;
+    }
+
+#importprogressbar {
+    background-color: gray;
+    border-radius: 5px;
+    position: absolute;
+    width: 250px;
+    height: 100px;
+    text-align: center;
+    top: 40%;
+    left: 50%;
+    margin-left: -125px;
+    visibility: hidden;
+    z-index: 10;
+}
+
+    #importprogressbar img {
+        padding-top: 8%;
+        padding-bottom: 5%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        vertical-align: middle;
+    }
+
+#mdataForm {
+    padding-top: 3%;
+    width: 500px;
+    margin: 0 auto;
+    vertical-align: middle;
+}
+
+#dataForm {
+    padding-top: 0px;
+}
+
+    #dataForm input {
+        height: 30px;
+    }
+
+#fileinsert {
+    padding-top: 5%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+
+
+#metadatacontainer {
+    background-color: red;
+    height: 80%;
+}
+
+#censuscontainer {
+    background-color: blue;
+}
+
+.formbuttons {
+    width:100%;
+    padding-top: 1%;
+    text-align: center;
+}
+
+#backbutton {
+    float: left;
+    width: 33%;
+    text-align: left;
+}
+
+    #backbutton button {
+        margin-left: 15%;
+    }
+
+#clearbutton {
+    float: left;
+    width: 33%;
+}
+
+#nextbutton {
+    float: left;
+    width: 33%;
+    text-align: right;
+}
+
+#backbuttonM {
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+#nextbuttonM {
+    float: left;
+    width: 50%;
+    text-align: right;
+}
+
+#nextbutton button {
+    margin-right: 45px;
+}
+
+#export_button {
+    padding-top: 15px;
+}
+
+
+#footer {
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+}
+
+#conflictFreeFormsMessage {
+    padding-top: 2%;
+}
+
+#tablecontent {
+    padding-top: 1%;
+    overflow: auto;
+    height: 500px;
+}
+
+#table1content {
+    width:100%;
+    
+}
+    #table1content div {
+        width:60%;
+        margin:0 auto;
+   
+        padding-top:20%;
+    }
+
+#table-1 {
+    border: 1px solid #e3e3e3;
+    border-radius: 6px;
+    width:100%;
+}
+
+    
+    #table-1 td {
+        line-height: 20px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: black;
+        font-size: 14px;
+        border-bottom: 1px solid #fff;
+        border-top: 1px solid #fff;
+        border-right: 1px solid #fff;
+    }
+
+    #table-1 thead {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        padding: .2em 0 .2em .5em;
+        text-align: left;
+        color: #4B4B4B;
+        background-color: #C8C8C8;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#e3e3e3), color-stop(.6,#B3B3B3));
+        background-image: -moz-linear-gradient(top, #D6D6D6, #B0B0B0, #B3B3B3 90%);
+        border-bottom: solid 1px #999;
+    }
+
+#tableHeaders {
+    padding-top: 1%;
+    position: relative;
+}
+
+#stationaryHeaders {
+    margin: 0 auto;
+    width: 90%;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    background-color: #767676;
+    color: black;
+    text-align: left;
+}
+
+    #stationaryHeaders th {
+
+        text-align:left;
+        padding: 5px;
+        font-size: 15px;
+        color: white;
+    }
+
+#table-2 {
+    margin: 0 auto;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    width: 90%;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+}
+
+    #table-2 td, #table-2 th {
+        padding: 5px;
+        color: #333;
+    }
+
+    #table-2 thead {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        padding: .2em 0 .2em .5em;
+        text-align: left;
+        color: #4B4B4B;
+        background-color: #C8C8C8;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#e3e3e3), color-stop(.6,#B3B3B3));
+        background-image: -moz-linear-gradient(top, #D6D6D6, #B0B0B0, #B3B3B3 90%);
+        border-bottom: solid 1px #999;
+    }
+
+    #table-2 th, #table-3 th {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: black;
+        line-height: 0px;
+        font-style: normal;
+        font-weight: normal;
+        text-align: left;
+        visibility: hidden;
+    }
+
+    #table-2 td {
+        line-height: 20px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: black;
+        font-size: 14px;
+        border-bottom: 1px solid #fff;
+    }
+
+        #table-2 td:hover {
+            background-color: #fff;
+        }
+
+#table_importedforms {
+    overflow: auto;
+    height: 500px;
+}
+
+#table-3 {
+    margin: 0 auto;
+    border: 1px solid #e3e3e3;
+    width: 90%;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+}
+
+    #table-3 td, #table-3 th {
+        padding: 5px;
+        color: #333;
+    }
+
+    #table-3 thead {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        padding: .2em 0 .2em .5em;
+        text-align: left;
+        color: #4B4B4B;
+        background-color: #C8C8C8;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#e3e3e3), color-stop(.6,#B3B3B3));
+        background-image: -moz-linear-gradient(top, #D6D6D6, #B0B0B0, #B3B3B3 90%);
+        border-bottom: solid 1px #999;
+    }
+
+    #table-3 td {
+        line-height: 20px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: black;
+        font-size: 14px;
+        border-bottom: 1px solid #fff;
+        border-top: 1px solid #fff;
+    }
+
+        #table-3 td:hover {
+            background-color: #fff;
+        }
+
+#twobutton_cancel {
+    width: 33.33%;
+    float: left;
+    text-align:right;
+}
+
+
+#twobutton_next {
+    width: 33.33%;
+    float: left;
+    text-align:left;
+}
+#exportinvalid_button {
+    width:33.33%;
+    float:left;
+}
+
+#searchButton {
+    padding-left: 15%;
+}
+
+#plotview_table {
+    width: 80%;
+    border-left: 1px solid #999;
+    float: left;
+   
+}
+
+    #plotview_table table {
+        border: none;
+        margin: 0 auto;
+    }
+
+    #plotview_table td {
+        text-align: center;
+        height: 105px;
+        width: 105px;
+        border: none;
+        padding: 15px;
+    }
+
+    #plotview_table button {
+        height: 105px;
+        width: 105px;
+        font-size:21px;
+    }
+
+
+
+#subplotview {
+    padding-top: 0%;
+    width: 80%;
+    border-left: 1px solid #999;
+    float: left;
+    
+}
+
+    #subplotview button {
+    }
+
+
+
+
+
+
+#visualmapdata {
+    float: left;
+    width: 19.55%;
+    height: 100%;
+    
+}
+
+    #visualmapdata div {
+        padding-top: 0%;
+        width: 90%;
+        margin: 0 auto;
+    }
+        #visualmapdata div h2 {
+        padding-bottom:3%;
+
+        }
+
+        #visualmapdata div input {
+            width: 90%;
+        }
+            #visualmapdata div input[type="text"]:disabled {
+            border:0;
+            background-color:white;
+           
+            }
+    
+        #visualmapdata div label {
+            font-weight:700;
+        }
+
+
+
+
+#subplotmapdata {
+    float: left;
+    width: 19.55%;
+    height: 100%;
+   
+}
+
+    #subplotmapdata div {
+        padding-top: 10%;
+        width: 90%;
+    }
+
+        #subplotmapdata div input {
+            width: 80%;
+        }
+
+
+
+#visualmap {
+    padding-top: 5%;
+    width: 100%;
+}
+
+#subplotInfo {
+    width: 90%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#subplotDiv {
+    width: 60.5%;
+    margin: 0 auto;
+    /* border:1px solid #0096d6;*/
+    
+    
+}
+
+}
+
+#newdiameterdiv {
+    visibility: hidden;
+}
+
+#newpomheightdiv {
+    visibility: hidden;
+}
+
+#recensusProgressDiv h1 {
+    color: #0096d6;
+}
+
+
+
+.graph {
+    width: 500px; /* width and height are arbitrary, just make sure the #bar styles are changed accordingly */
+    height: 30px;
+    border: 1px solid #888;
+    background: rgb(168,168,168);
+    background: -moz-linear-gradient(top, rgba(168,168,168,1) 0%, rgba(204,204,204,1) 23%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(168,168,168,1)), color-stop(23%,rgba(204,204,204,1)));
+    background: -webkit-linear-gradient(top, rgba(168,168,168,1) 0%,rgba(204,204,204,1) 23%);
+    background: -o-linear-gradient(top, rgba(168,168,168,1) 0%,rgba(204,204,204,1) 23%);
+    background: -ms-linear-gradient(top, rgba(168,168,168,1) 0%,rgba(204,204,204,1) 23%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a8a8a8', endColorstr='#cccccc',GradientType=0 );
+    background: linear-gradient(top, rgba(168,168,168,1) 0%,rgba(204,204,204,1) 23%);
+    position: relative;
+}
+
+#bar {
+    height: 29px; /* Not 30px because the 1px top-border brings it up to 30px to match #graph */
+    background: #00c1f2; /* Old browsers */
+    background: -moz-linear-gradient(top, #00c1f2 0%, #0096d6 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00c1f2), color-stop(100%,#0096d6)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #00c1f2 0%,#0096d6 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #00c1f2 0%,#0096d6 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #00c1f2 0%,#0096d6 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #00c1f2 0%,#0096d6 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c1f2', endColorstr='#0096d6',GradientType=0 ); /* IE6-9 */
+    border-top: 1px solid #fceabb;
+}
+
+    #bar p {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        margin: 0;
+        line-height: 30px;
+    }
+
+.error {
+    /* These styles are arbitrary */
+    background-color: #fceabb;
+    padding: 1em;
+    font-weight: bold;
+    color: red;
+    border: 1px solid red;
+}

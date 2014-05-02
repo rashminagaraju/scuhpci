@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Review </title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+    <script src="/js/utils.js"></script>
+
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+
+    <!-- jQuery Mobile -->
+
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+
+
+    <!-- Validate.js includes all the validation functions-->
+    <script src="/js/validate.js"></script>
+
+    <!-- IDBStore -->
+    <script src="/js/idbstore.js"></script>
+    <script src="/js/vegcensusstore.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/forms.css" rel="stylesheet" />
+     <link href="/css/font_instal.css" rel="stylesheet" type="text/css">
+    <script src="/js/utils.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+
+        function populateSiteNumber() {
+            var siteNumber = window.localStorage.getItem("sitenumber");
+            document.getElementById("sitenumber").value = siteNumber;
+        }
+
+        /**
+         * This function is invoked when the user clicks on the search button after entering search terms 
+         * Some validations are done about which search terms are mandatory/optional and then loadTableData() 
+         * is invoked to show search results in a table
+         */
+        function onSearchClick() {
+            document.getElementById("searchb").disabled = true;
+            document.getElementById("savingprogressbar").style.visibility = "visible";
+            var sitenumber = document.getElementById("sitenumber").value;
+            var plotnumber = document.getElementById("plotnumber").value;
+            var subplotnumber = document.getElementById("subplotnumber").value;
+
+            if (sitenumber == '' && (plotnumber != '' || subplotnumber != '')) {
+                alert("Site number needs to be specified if either Plot Number or Subplot Number is specified");
+                return;
+            }
+            if (plotnumber == '' && subplotnumber != '') {
+                alert("Plot Number needs to be specified if Subplot Number is specified");
+                return;
+            }
+
+            sitenumber = sitenumber.toUpperCase();
+
+            var onReady = function () {
+                loadTableData(sitenumber, plotnumber, subplotnumber);
+            }
+            initFormsStore(onReady);
+        }
+
+        /**
+         * This function apply additional filters on search results based on URL parameters
+         * if showOnlyImportedForms is sent as a URL parameter, then all forms which are locally created
+         * are filtered out. If showOnlyEditedForms is sent as a URL parameter, then all forms which have never
+         * been modified are filtered out. If there is no URL parameter, no filtering is done
+         */
+        function applyAdditionalFiltering(forms) {
+            var filteredForms = forms;
+            if (getURLParameter("showOnlyImportedForms") != null) {
+                filteredForms = [];
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    if (form["isLocalForm"] == 0) {
+                        filteredForms.push(form);
+                    }
+                }
+            }
+            else if (getURLParameter("showOnlyEditedForms") != null) {
+                filteredForms = [];
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    if (form["isEditedOnTablet"] != null) {
+                        filteredForms.push(form);
+                    }
+                }
+            }
+
+            return filteredForms;
+        }
+
+        /**
+         * This function displays search results as a HTML table
+         */
+        function drawTable(forms) {
+            forms = applyAdditionalFiltering(forms);
+            var fieldNames = new Array("samplingunitid", "sitenumber", "plotnumber", "subplotnumber", "indnumber");
+            //, "yearofcensus", "monthofcensus", "dayofcensus");
+            var displayNames = {};
+            displayNames["samplingunitid"] = "Sampling Unit ID";
+            displayNames["sitenumber"] = "Site Code";
+            displayNames["plotnumber"] = "Plot Number";
+            displayNames["subplotnumber"] = "Sub-plot Number";
+            displayNames["indnumber"] = "Individual Number";
+            //displayNames["yearofcensus"] = "Year of Census";
+            //displayNames["monthofcensus"] = "Month of Census";
+            //displayNames["dayofcensus"] = "Day of Census";
+
+            var tableContents = "";
+            //Table Headings
+            tableContents += "<TR>";
+            for (i = 0; i < fieldNames.length; i++) {
+                tableContents += "<TH class=\"table-2 th\">" + displayNames[fieldNames[i]] + "</TH>";
+            }
+
+            tableContents += "</TR>";
+
+            //Table Data
+            for (formIndex = 0; formIndex < forms.length; formIndex++) {
+                var form = forms[formIndex];
+                tableContents += "<TR id=\"" + form["samplingunitid"] + "\">";
+                for (i = 0; i < fieldNames.length; i++) {
+                    tableContents += "<TD>";
+                    var key = fieldNames[i];
+                    var value = form[key];
+                    if (value != null) {
+                        if (key == "samplingunitid") {
+                            var target = (form["isLocalForm"] == 1 ? "censusform.html" : "recensusform.html");
+                            target += "?suid=" + value;
+                            tableContents += "<A href='" + target + "'>" + value + "</A>";
+                        }
+                        else {
+                            tableContents += value;
+                        }
+                    }
+                    tableContents += "</TD>";
+
+                }
+                tableContents += "</TR>";
+            }
+
+            var table = document.getElementById("table-2");
+            table.innerHTML = tableContents;
+            document.getElementById("searchb").disabled = false;
+            document.getElementById("savingprogressbar").style.visibility = "hidden";
+
+        }
+
+    </script>
+</head>
+
+<body onload="populateSiteNumber(), onSearchClick()">
+    <div id="wrapper">
+          <div class="title">
+          <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <div style="clear: both; height: 0; padding-top: 2%"></div>
+
+        <div class="pure-form pure-form-aligned">
+            <div class="pure-control-group">
+                <label for="sitenumber">Site Code</label>
+                <input id="sitenumber" style="width: 125px" placeholder="ALL" readonly="readonly" disabled="disabled">
+            </div>
+            <div class="pure-control-group">
+
+                <label for="plotnumber">Plot Number</label>
+                <input id="plotnumber" style="width: 125px" placeholder="ALL">
+            </div>
+            <div class="pure-control-group">
+                <label for="subplotnumber">Subplot Number</label>
+                <input id="subplotnumber" style="width: 125px" placeholder="ALL">
+            </div>
+            <div id="searchButton">
+                <div style="float: left">
+                    <button onclick="onSearchClick()" id="searchb" type="button">Search</button></div>
+            </div>
+            <div style="clear: both; height: 0"></div>
+        </div>
+        <div id="tableHeaders">
+            <table id="stationaryHeaders">
+                <tr>
+                    <th>Sample Unit ID</th>
+                    <th>Site Code</th>
+                    <th>Plot Number</th>
+                    <th>Sub-Plot Number</th>
+                    <th>Individual Number</th>
+                </tr>
+
+            </table>
+        </div>
+        <div id="tablecontent">
+            <table id="table-2">
+            </table>
+        </div>
+        <!--
+        <div id="formbuttons">
+            <div id="export_button" align="center"><button onclick="window.location.href='exportforms.html'" >Export Forms</button></div>
+        </div>
+        -->
+        <div id="savingprogressbar" style="visibility: hidden;">
+            <img id="progressBar" src="/images/progress_bar_small.gif" />
+        </div>
+        <div id="footer">
+        </div>
+    </div>
+</body>
+</html>

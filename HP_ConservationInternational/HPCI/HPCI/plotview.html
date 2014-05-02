@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!--<script src="/js/jquery-1.9.1.min.js"></script>-->
+        <script src="/js/jqueryui.js"></script>
+
+
+    <!-- IDBStore wrapper -->
+    <script src="/js/idbstore.js"></script>
+
+    <!-- Census Store functions -->
+    <script src="/js/vegcensusstore.js"></script>
+
+    <script src="/js/utils.js"></script>
+
+    <script src="/js/autocomplete.js"></script>
+
+    <script src="/js/metadatacommon.js"></script>
+
+    <!-- Form Validation -->
+    <script src="/js/validate.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/font_instal.css" rel="stylesheet" type="text/css">
+    <!--<link href="/css/forms.css" rel="stylesheet" />-->
+    <link href="/css/columnform.css" rel="stylesheet" />
+    <link href="/css/validate.css" rel="stylesheet" />
+    <link href="/css/jqueryui.css" rel="stylesheet" />
+
+    <script type="text/javascript" charset="utf-8">
+
+        function setMetadataFieldStatus(isDisabled) {
+            var metadataFields = getMetadataFieldNames();
+            for (i = 0; i < metadataFields.length; i++) {
+                document.getElementById(metadataFields[i]).disabled = isDisabled;
+            }
+            document.getElementById("siteName").disabled = isDisabled;
+            document.getElementById("fulldate").disabled = isDisabled;
+        }
+
+        function displayMetadata() {
+            var site = window.sessionStorage.getItem("sitenumber");
+            var plotno = window.sessionStorage.getItem("plotnumber");
+            if (site != null && plotno != null) {
+                loadMetadataFromSession();
+                populateFullDate();
+                setMetadataFieldStatus(true);
+                document.getElementById("submitButton").innerHTML = "Edit";
+            }
+            else {
+                document.getElementById("submitButton").innerHTML = "Update";
+            }
+        }
+
+        /**
+        * saves site number and plot number in session. If the metadata for this site/plot
+        * already exists in session, we take the user directly to censusform.html. Otherwise,
+        * we make the user enter metadata
+        */
+        function updateMetadataInSession() {
+            if (document.getElementById("submitButton").innerHTML == "Edit") {
+                setMetadataFieldStatus(false);
+                document.getElementById("submitButton").innerHTML = "Update";
+                return false;
+            }
+            
+            window.sessionStorage.removeItem("clickedSamplingUnitID");
+            var site = document.getElementById("sitenumber");
+            if (site.value.length == 0) {
+                alert("Please enter a Site Number");
+                return false;
+            }
+
+            var plotno = document.getElementById("plotnumber");
+            if (plotno.value.length == 0) {
+                alert("Please enter a Plot Number");
+                return false;
+            }
+
+            window.sessionStorage.setItem("sitenumber", site.value);
+            window.sessionStorage.setItem("plotnumber", plotno.value);
+            saveMetadataToSession();
+            return true;
+        }
+
+        function populateSiteNumber() {
+            var siteNumber = window.localStorage.getItem("sitenumber");
+            document.getElementById("sitenumber").value = siteNumber;
+            var siteName = getSiteName(siteNumber);
+            document.getElementById("siteName").value = siteName;
+        }
+
+        function populateFullDate() {
+            var fullDate = document.getElementById("monthofmd").value + "/" +
+                document.getElementById("dayofmd").value + "/" + document.getElementById("yearofmd").value;
+            document.getElementById("fulldate").value = fullDate;
+        }
+        
+        function parseFullDate() {
+            var dataFields = new Array("monthofmd", "dayofmd","yearofmd");
+
+            var date = document.getElementById("fulldate").value;
+            var parsedDate = date.split("/");
+
+            for (i = 0; i < dataFields.length; i++) {
+                document.getElementById(dataFields[i]).value = parsedDate[i];
+
+            }
+           
+
+        }
+    </script>
+
+    
+    <script type="text/javascript" charset="utf-8">
+    
+        function sendData() {
+            alert("testing onclick for a table cell.");
+        }
+
+        function sendData(x) {
+
+            var sitenumber = window.sessionStorage.getItem("sitenumber");
+            var plotnumber = window.sessionStorage.getItem("plotnumber");
+    
+            if (sitenumber == null || plotnumber == null) {
+                alert("Please input all the required Metadata fields before selecting a subplot");
+                return false;
+            }
+
+            var url = "subplot_visualmap.html?siteNumber=" + sitenumber + "&plotNumber=" + plotnumber + "&subplotNumber=" + x;
+            window.location.href = url;
+        }
+
+
+
+    </script>
+
+</head>
+
+<body onload="displayMetadata(), populateSiteNumber()">
+    <div id="wrapper">
+             <div class="title">
+          <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <!-- /header -->
+        <div style="clear: both; height: 0;"></div>
+        <div id="visualmapdata">
+
+            <div>
+                <h2>Metadata</h2>
+                 <form class="" onsubmit="return(updateMetadataInSession())">
+                    <div class="">
+                        <label for="siteName">Site</label>
+                        <input id="siteName" type="text" placeholder="Site" required="required" readonly="readonly">
+                        <input id="sitenumber" type="hidden">
+                    </div>
+                    <div class="">
+                        <label for="plotnumber">Plot Number</label>
+                        <input id="plotnumber" type="text" placeholder="Plot Number" required="required" onchange="checkplot()">
+                    </div>
+                       <script>
+                           $(function () {
+                               $("#fulldate").datepicker();
+                           });
+                        </script>
+                     <div class="">
+                       <label for="fulldate">Date</label>
+                        <input id="fulldate" type="text" placeholder="Date (MM/DD/YYYY)" onchange="parseFullDate()" required="required">
+                    </div>
+                    <div class="">
+                      <!--  <label for="yearofmd">Year</label>-->
+                        <input id="yearofmd" type="hidden" placeholder="Year of Metadata (YYYY)" onchange="checkyearofmd()" required="required">
+                    </div>
+                    <div class="">
+                      <!--  <label for="monthofmd">Month</label>-->
+                        <input id="monthofmd" type="hidden" placeholder="Month of Metadata (MM)" onchange="checkmonthofmd()" required="required">
+                    </div>
+                    <div class="">
+                       <!-- <label for="dayofmd">Day</label>-->
+                        <input id="dayofmd" type="hidden" placeholder="Day of Metadata (DD)" onchange="checkdayofmd()" required="required">
+                    </div>
+                    <div class="">
+                        <label for="fnameofrecorder">First Name of Recorder</label>
+                        <input id="fnameofrecorder" type="text" placeholder="First Name of Recorder" onchange="checkfnr()" required="required">
+                    </div>
+                    <div class="">
+                        <label for="lnameofrecorder">Last Name of Recorder</label>
+                        <input id="lnameofrecorder" type="text" placeholder="Last Name of Recorder" onchange="checklnr()" required="required">
+                    </div>
+                    <div class="">
+                        <label for="fnameofpersonmeasuringdiameter">First Name of Person Meas.</label>
+                        <input id="fnameofpersonmeasuringdiameter" type="text" placeholder="First Name" onchange="checkfnm()" required="required">
+                    </div> 
+                    <div class="">
+                        <label for="lnameofpersonmeasuringdiameter">Last Name of Person Meas.</label>
+                        <input id="lnameofpersonmeasuringdiameter" type="text" placeholder="Last Name" onchange="checklnm()" required="required">
+                    </div>
+                    <div class="">
+                        <label for="recordercomments">Comments</label>
+                        <input id="recordercomments" type="text" placeholder="Comments">
+                    </div>
+                          <button id="submitButton">Update</button>
+                     
+
+                </form>
+                
+
+            </div>
+
+        </div>
+
+        <div id="plotview_table">
+            <div>
+                <table id="subplotOptions" border="1">
+                    <tr>
+                        <td>
+                            <button onclick="sendData(5)" class="subplotButton">5</button></td>
+                        <td>
+                            <button onclick="sendData(6)" class="subplotButton">6</button></td>
+                        <td>
+                            <button onclick="sendData(15)" class="subplotButton">15</button></td>
+                        <td>
+                            <button onclick="sendData(16)" class="subplotButton">16</button></td>
+                        <td>
+                            <button onclick="sendData(25)" class="subplotButton">25</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button onclick="sendData(4)" class="subplotButton">4</button></td>
+                        <td>
+                            <button onclick="sendData(7)" class="subplotButton">7</button></td>
+                        <td>
+                            <button onclick="sendData(14)" class="subplotButton">14</button></td>
+                        <td>
+                            <button onclick="sendData(17)" class="subplotButton">17</button></td>
+                        <td> 
+                            <button onclick="sendData(24)" class="subplotButton">24</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button onclick="sendData(3)" class="subplotButton">3</button></td>
+                        <td>
+                            <button onclick="sendData(8)" class="subplotButton">8</button></td>
+                        <td>
+                            <button onclick="sendData(13)" class="subplotButton">13</button></td>
+                        <td>
+                            <button onclick="sendData(18)" class="subplotButton">18</button></td>
+                        <td>
+                            <button onclick="sendData(23)" class="subplotButton">23</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button onclick="sendData(2)" class="subplotButton">2</button></td>
+                        <td>
+                            <button onclick="sendData(9)" class="subplotButton">9</button></td>
+                        <td>
+                            <button onclick="sendData(12)" class="subplotButton">12</button></td>
+                        <td>
+                            <button onclick="sendData(19)" class="subplotButton">19</button></td>
+                        <td>
+                            <button onclick="sendData(22)" class="subplotButton">22</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button onclick="sendData(1)" class="subplotButton">1</button></td>
+                        <td>
+                            <button onclick="sendData(10)" class="subplotButton">10</button></td>
+                        <td>
+                            <button onclick="sendData(11)" class="subplotButton">11</button></td>
+                        <td>
+                            <button onclick="sendData(20)" class="subplotButton">20</button></td>
+                        <td>
+                            <button onclick="sendData(21)" class="subplotButton">21</button></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <div id="footer"></div>
+        <!-- /footer -->
+    </div>
+    <!-- /wrapper -->
+</body>
+</html>

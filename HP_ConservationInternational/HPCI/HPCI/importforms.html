@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!--Validate.js includes all the validation functions-->
+    <script src="/js/validate.js"></script>
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+
+    <script src="/js/importExportCommon.js"></script>
+      <script src="/js/utils.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/forms.css" rel="stylesheet" />
+    <link href="/css/columnform.css" rel="stylesheet" />
+    <link href="/css/font_instal.css" rel="stylesheet" />
+    
+
+    <script type="text/javascript" charset="utf-8">
+
+
+        //Check if the plotX and plotY coordinate values are present and are in the range 0-100 
+        function isInvalidPlotXPlotYForm(form) {
+            if (form["plotxcoord"] == null || form["plotycoord"] == null ||
+                form["plotxcoord"] > 100 || form["plotxcoord"] < 0 ||
+                form["plotycoord"] > 100 || form["plotycoord"] < 0) {
+                return true;
+            }
+            return false;
+        }
+
+        function logTimeMsg(str) {
+            /*
+            var tmsg = window.sessionStorage.getItem("timeMsg");
+            if (tmsg != null) {
+                tmsg += "\n" + str + " ms";
+            }
+            else {
+                tmsg = str + " ms";
+            }
+            window.sessionStorage.setItem("timeMsg", tmsg);*/
+        }
+
+        /**
+         * This function is called when a file is read completely and does xml parsing of the file. It saves
+         * all the forms parsed from the xml file and saves it as an array of forms in session storage with
+         * the key "importedForms"
+         */
+        function onFileRead(event, file) {
+            logTimeMsg("Time after file read: " + Date.now());
+
+            var importStatus = JSON.parse(window.sessionStorage.getItem("importStatus"));
+            var importDataIssues = JSON.parse(window.sessionStorage.getItem("importDataIssues"));
+            var dataIssues = {};
+            var invalidPlotXPlotYForms = {};
+            var invalidPlotXPlotYCount = 0;
+
+            if (window.DOMParser) {
+                parser = new DOMParser();
+                try {
+                    var start = Date.now();
+                    var xmlDoc = parser.parseFromString(event.target.result, "text/xml");
+                    logTimeMsg("Time for XML parsing: " + (Date.now() - start));
+
+                    //var forms = getImportedForms(xmlDoc); //forms is an array of hashmaps; each hashmap has form field names as keys
+                    start = Date.now();
+                    var formsTree = getImportedForms(xmlDoc, "TreeRecod"); //forms is an array of hashmaps; each hashmap has form field names as keys
+                    logTimeMsg("Time for processing DOM elements for tree records: " + (Date.now() - start));
+
+                    start = Date.now();
+                    var formsLiana = getImportedForms(xmlDoc, "LianaRecod"); //forms is an array of hashmaps; each hashmap has form field names as keys
+                    logTimeMsg("Time for processing DOM elements for tree records: " + (Date.now() - start));
+
+                    var formsJson = window.sessionStorage.getItem("importedForms");
+                    var importedForms = JSON.parse(formsJson);
+                    start = Date.now();
+                    for (i = 0; i < formsTree.length; i++) {
+                        if (isInvalidPlotXPlotYForm(formsTree[i])) {
+                            var suid = formsTree[i]["samplingunitid"];
+                            invalidPlotXPlotYCount++;
+                            invalidPlotXPlotYForms[suid] = "true";
+                        }
+                        importedForms.push(formsTree[i]); //adding all forms(tree records) from this file to the global array of forms
+                    }
+                    logTimeMsg("Time for processing tree forms: " + (Date.now() - start));
+
+                    start = Date.now();
+                    for (i = 0; i < formsLiana.length; i++) {
+                        if (isInvalidPlotXPlotYForm(formsLiana[i])) {
+                            var suid = formsLiana[i]["samplingunitid"];
+                            invalidPlotXPlotYCount++;
+                            invalidPlotXPlotYForms[suid] = "true";
+                        }
+                        importedForms.push(formsLiana[i]); //adding all forms(liana records) from this file to the global array of forms
+                    }
+                    logTimeMsg("Time for processing liana forms: " + (Date.now() - start));
+
+                    //saving imported forms in session
+                    start = Date.now();
+                    window.sessionStorage.setItem("importedForms", JSON.stringify(importedForms));
+                    logTimeMsg("Time for saving to session: " + (Date.now() - start));
+                    importStatus[file] = "Imported successfully";
+                }
+                catch (exception) {
+                    importStatus[file] = "Error importing file:" + exception;
+                }
+            }
+            else {
+                importStatus[file] = "Error importing file:Unable to load parser";
+            }
+
+            dataIssues["invalidPlotXPlotYCount"] = invalidPlotXPlotYCount;
+            dataIssues["invalidPlotXPlotYForms"] = invalidPlotXPlotYForms;
+            importDataIssues[file] = dataIssues;
+
+            window.sessionStorage.setItem("importStatus", JSON.stringify(importStatus));
+            window.sessionStorage.setItem("importDataIssues", JSON.stringify(importDataIssues));
+            window.location.href = "displayImportedForms.html";
+        }
+
+        /**
+         * This function is called when an error occurs during a file read 
+         *
+         */
+        function onFileReadError(event, file) {
+            var importStatus = JSON.parse(window.sessionStorage.getItem("importStatus"));
+            importStatus[file] = "Error importing file:" + event.getMessage();
+            console.log(event.getMessage());
+            window.sessionStorage.setItem("importStatus", JSON.stringify(importStatus));
+        }
+
+        /**
+         * This function reads a file selected by the user and when a file is successfully read, 
+         * it calls the onFileRead() function
+         */
+        function handle_files(files) {
+            document.getElementById("importButton").style.visibility = "hidden";
+            document.getElementById("importprogressbar").style.visibility = "visible";
+
+            var file = files[0];
+            console.log(file);
+
+            var importStatus = {}; //map of filename to import status. initialized to empty map
+            var importedForms = []; //array of imported forms. initialized to empty array
+            importStatus[file.name] = "Reading";
+
+            var importDataIssues = {};
+
+            window.sessionStorage.setItem("importStatus", JSON.stringify(importStatus)); //map of filename to import status. initialized to empty map
+            window.sessionStorage.setItem("importedForms", JSON.stringify(importedForms)); //array of imported forms across all files. initialized to empty array
+            window.sessionStorage.setItem("importDataIssues", JSON.stringify(importDataIssues));
+
+            var reader = new FileReader(); //FileReader creates a new thread for reading file
+
+            //Register callbacks(event handler)
+            reader.onload = (function (file) {
+                return function (evt) {
+                    return onFileRead(evt, file);
+                };
+            })(file.name); //the thread will call back onFileRead when it is done
+
+            reader.onerror = (function (file) {
+                return function (evt) {
+                    return onFileReadError(evt, file);
+                };
+            })(file.name);//the thread will call back onFileReadError if there was an error
+
+            logTimeMsg("Time before file read: " + Date.now());
+            reader.readAsText(file) //FileReader actually starts(spawns) the thread here; readAsText() is not a blocking call
+            // and returns immediately
+        }
+
+        /**
+         * Helper function to retrive desired elements in the DOM tree
+         *
+         */
+        function getNodeValue(nodeName, rootNode) {
+            for (j = 0; j < rootNode.childNodes.length; j++) {
+                var childNode = rootNode.childNodes[j];
+                if (childNode.nodeName == nodeName) {
+                    if (childNode.childNodes != null && childNode.childNodes.length > 0) {
+                        return childNode.childNodes[0].data;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Helper function to retrive desired elements in the DOM tree
+         *
+         */
+        function getChildNode(nodeName, rootNode) {
+            for (k = 0; k < rootNode.childNodes.length; k++) {
+                var childNode = rootNode.childNodes[k];
+                if (childNode.nodeName == nodeName) {
+                    return childNode;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * This function goes through the DOM tree after the xml file is parsed and retrieves 
+         * individual form fields for each form
+         * @param xmlDoc - is the DOM tree corresponding to the parsed xml file
+         * @param recordType - is a tree record or a liana record
+         * @returns - an array of forms where each form is a map
+         */
+        function getImportedForms(xmlDoc, recordType) {
+            var forms = xmlDoc.getElementsByTagName(recordType);
+            var retArray = [];
+            for (i = 0; i < forms.length; i++) {
+                var form = forms.item(i);
+                var fieldNames = getTopLevelFieldNames(); //returns a hashmap
+                var values = {};//empty hashmap
+                for (var key in fieldNames) {
+                    var tagName = fieldNames[key];
+                    var value = getNodeValue(tagName, form);
+                    values[key] = value;
+                }
+
+                var treePointNode = getChildNode("TreePoint", form);
+                var treePointFieldNames = getTreePointFieldNames(); //returns a hashmap
+                for (var key in treePointFieldNames) {
+                    var tagName = treePointFieldNames[key];
+                    values[key] = getNodeValue(tagName, treePointNode);
+                }
+
+                var samplingUnitID = values["samplingunitid"];
+                var parts = samplingUnitID.split("-");
+                values["treeorliana"] = (parts[0] == "VT" ? "T" : "L");
+                values["sitenumber"] = parts[1];
+                values["plotnumber"] = parts[2];
+                values["indnumber"] = parts[3];
+
+                var collectedAt = getNodeValue("collectedAt", form);
+                var censusMillis = Date.parse(collectedAt);
+                var censusDate = new Date(censusMillis);
+                values["yearofcensus"] = censusDate.getFullYear();
+                values["monthofcensus"] = censusDate.getMonth();
+                values["dayofcensus"] = censusDate.getDay();
+                retArray.push(values); //addingr hashmap to the return array
+            }
+
+            return retArray;
+        }
+    </script>
+    <script>
+        function loadimport() {
+            document.getElementById("importButton").click();
+        }
+    </script>
+
+</head>
+
+<body onload="loadimport();">
+
+    <div id="wrapper">
+
+           <div class="title">
+          <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <!-- /header -->
+         <div style="clear: both; height: 0;"></div>
+        <div id="fileinsert">
+
+            <input id="importButton" style="" type="file" onchange="handle_files(this.files)">
+        </div>
+        <div id="importprogressbar">
+            <img id="progressBar" src="/images/progress_bar_small.gif" />
+            <h3>Importing large files can take</h3>
+            <h3>a few minutes.</h3>
+        </div>
+
+
+
+        <div id="footer">
+        </div>
+        <!-- /footer -->
+
+    </div>
+
+</body>
+</html>

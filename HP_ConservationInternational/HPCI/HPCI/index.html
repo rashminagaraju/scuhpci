@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <script src="/js/validate.js"></script>
+    <!-- jQuery Mobile -->
+
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+
+    <!-- IDBStore -->
+    <script src="/js/idbstore.js"></script>
+    <script src="/js/vegcensusstore.js"></script>
+
+    <script src="/js/importExportCommon.js"></script>
+
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/font_instal.css" rel="stylesheet" type="text/css">
+
+    <script>
+        // WARNING: To be used only for testing!!! Causes data loss!!!
+        function clearData() {
+            var onReady = function () {
+                clearFormsStore();
+                alert("Cleared!");
+            }
+            initFormsStore(onReady);
+        }
+
+        /**
+         * @param {Map} form - map object corresponding to the form
+         * @returns {String} - the xml representation of the form
+         */
+        function getXMLRepresentation(form) {
+            var fieldNames = getTopLevelFieldNames(); //get map of field name to tag name
+            var treePointFieldNames = getTreePointFieldNames();
+
+            var startTag = (form["samplingunitid"].indexOf("VT") == 0 ? "<TreeRecod>" : "<LianaRecod>");
+            var endTag = (form["samplingunitid"].indexOf("VT") == 0 ? "</TreeRecod>" : "</LianaRecod>");
+            var treePointStartTag = "<TreePoint>";
+            var treePointEndTag = "</TreePoint>";
+
+            var xml = "\t" + startTag + "\n";
+            xml += "\t\t" + treePointStartTag + "\n";
+            for (field in treePointFieldNames) {
+                var tagName = treePointFieldNames[field];
+                var value = (form[field] != null ? form[field] : "");
+                xml += "\t\t\t" + "<" + tagName + ">" + value + "</" + tagName + ">\n";
+            }
+            xml += "\t\t" + treePointEndTag + "\n";
+
+            for (field in fieldNames) {
+                var tagName = fieldNames[field];
+                var value = (form[field] != null ? form[field] : "");
+                xml += "\t\t" + "<" + tagName + ">" + value + "</" + tagName + ">\n";
+            }
+            xml += "\t\t" + "<subplot>" + form["subplotnumber"] + "</subplot>\n";
+            var date = new Date(form["yearofcensus"], form["monthofcensus"], form["dayofcensus"]);
+            xml += "\t\t" + "<collectedAt>" + date.toISOString() + "</collectedAt>\n";
+
+            xml += "\t" + endTag + "\n";
+
+            return xml;
+        }
+
+        /**
+         * This function retrieves forms that have to be exported from the datastore, converts them to 
+         * xml representation and writes it out to the file selected by the user
+         *  
+         * @param {file} file - a file object corresponding to the user selected file name to which 
+         *                      forms have to be exported.
+         */
+        function exportForms(file) {
+
+            // callback invoked when there is an error in retrieving the forms from indexedDB store
+            var onError = function (error) {
+                alert("Unable to export:" + error);
+            }
+
+            // filter out forms which are not edited on the tablet
+            function applyAdditionalFiltering(forms) {
+                filteredForms = [];
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    if (form["isEditedOnTablet"] != null) {
+                        filteredForms.push(form);
+                    }
+                }
+                return filteredForms;
+            }
+
+            // callback invoked when forms are successfully retrieved from indexedDB store.
+            // Retrieved forms are converted to xml representation and written out to the file 
+            // using windows storage API.
+            var onSuccess = function (forms) {
+                forms = applyAdditionalFiltering(forms);
+                file.openAsync(Windows.Storage.FileAccessMode.readWrite).then(function (stream) {
+                    writer = new Windows.Storage.Streams.DataWriter(stream.getOutputStreamAt(0));
+                    var startTag = "<vegetationData>\n";
+                    var endTag = "\n</vegetationData>";
+                    writer.writeString(startTag);
+                    for (i = 0; i < forms.length; i++) {
+                        var form = forms[i];
+                        var formXml = getXMLRepresentation(form);
+                        writer.writeString(formXml);
+                    }
+                    writer.writeString(endTag);
+                    return writer.storeAsync();
+                }).then(function () {
+                    console.log("Done writing");
+                    return writer.flushAsync();
+                }).done(function () {
+                    writer.close();
+                    Windows.Storage.CachedFileManager.completeUpdatesAsync(file).done(function (updateStatus) {
+                        if (updateStatus == Windows.Storage.Provider.FileUpdateStatus.complete) {
+                            alert("Finished exporting to " + file.name + " successfully");
+                        }
+                        else {
+                            alert("Export failed!. Error saving to " + file.name);
+                        }
+                    });
+                });
+            }
+
+            var onStoreReady = function () {
+                getAllForms(onSuccess, onError);
+            }
+            initFormsStore(onStoreReady);
+        }
+
+        /**
+         * This function is invoked when the "Export" button is clicked. 
+         * The "Save As" dialog is shown using windows storage "FileSavePicker" API.
+         */
+        function onExportClicked() {
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            // Dropdown of file types the user can save the file as
+            savePicker.fileTypeChoices.insert("XML", [".xml"]);
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.suggestedFileName = "exported_data";
+
+            var onDialogClose = function (file) {
+                if (file) {
+                    console.log("Selected = " + file.name);
+                    exportForms(file);
+                }
+                else {
+                    console.log("Export was cancelled");
+                }
+            }
+
+            //show the dialog and register callback
+            savePicker.pickSaveFileAsync().then(onDialogClose);
+        }
+
+    </script>
+
+
+
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div class="title">
+           <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+              </div>
+            <div id="elephantimage">
+                <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <div style="clear: both; height: 0;"></div>
+
+        <div id="option_button">
+            <div>
+
+                <div style="float: left">
+                
+                        <button id="importbutton" onclick="window.location.href='importforms.html'">Import</button>
+                </div>
+               <div style="float: left">
+                    <button onclick="window.location.href='plotview.html'">Census</button></div>
+                <div style="clear: both; height: 0;"></div>
+                <!-- <div style="float:left"><button onclick="window.location.href='review.html?showOnlyImportedForms=true'" >ReCensus</button></div> -->
+               
+            </div>
+          
+            <div>
+                 <div style="float:left">
+                    
+                        <button id="exportbutton" onclick="onExportClicked()">Export</button>
+                </div>
+                 
+                <div style="float: left">
+                    <button onclick="window.location.href='review.html?showOnlyEditedForms=true'">View/Edit Records</button></div>
+                <!-- <div style="float:left"><button onclick="window.location.href='subplot_visualmap.html?siteNumber=COU&plotNumber=2&subplotNumber=20'">View/Edit Records</button></div> -->
+
+    
+            </div>
+
+        </div>
+
+        <!--<button onclick="window.location.href='siteplotinput.html'">Plot View</button>-->
+        <div style="clear: both; height: 0;"></div>
+
+
+        <!--<button onclick="clearData()">Clear data</button>-->
+        <div id="footer">
+
+            <footer>© 2013 Conservation International | <a href="about.html">About Us</a></footer>
+        </div>
+
+
+    </div>
+</body>
+</html>

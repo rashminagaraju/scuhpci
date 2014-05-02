@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+
+    <!-- IDBStore wrapper -->
+    <script src="/js/idbstore.js"></script>
+
+    <!-- Census Store functions -->
+    <script src="/js/vegcensusstore.js"></script>
+
+    <script src="/js/utils.js"></script>
+
+    <script src="/js/metadatacommon.js"></script>
+    <script src="/js/censusCommon.js"></script>
+
+    <!-- Form Validation -->
+    <script src="/js/validate.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <!--<link href="/css/forms.css" rel="stylesheet" />-->
+    <link href="/css/columnform.css" rel="stylesheet" />
+    <link href="/css/validate.css" rel="stylesheet" />
+    <link href="/css/font_instal.css" rel="stylesheet" />
+
+
+</head>
+
+<body onload="loadData()">
+            <script>
+
+
+                setTimeout(function () { loadDate(); }, 2500);
+                setTimeout(function () { dynamicV(); }, 2500);
+            </script>
+
+    <div id="wrapper">
+
+         <div class="title">
+          <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <!-- /header -->
+        <div style="clear: both; height: 0;"></div>
+        <div id="dataForm">
+            <form id="contactform" name="censusform" onsubmit="saveData()">
+                <input id="sitenumber" type="hidden">
+                <input id="plotnumber" type="hidden">
+                <input id="yearofmd" type="hidden">
+                <input id="monthofmd" type="hidden">
+                <input id="dayofmd" type="hidden">
+                <input id="fnameofrecorder" type="hidden">
+                <input id="lnameofrecorder" type="hidden">
+                <input id="fnameofpersonmeasuringdiameter" type="hidden">
+                <input id="lnameofpersonmeasuringdiameter" type="hidden">
+                <input id="recordercomments" type="hidden">
+                <input id="isLocalForm" type="hidden" value="0">
+                <input id="isEditedOnTablet" type="hidden" value="0">
+
+                <div class="formcolumn">
+                    <h2 style="visibility: hidden; padding-top: 0px">-</h2>
+                    <div class="">
+                        <label for="indnumber">Ind No.</label>
+                        <input id="indnumber" type="text" onchange="checkind()" placeholder="Ind Number" required="required" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="subplotnumber">Subplot No.</label>
+                        <input id="subplotnumber" type="text" onchange="checksubplotnumber()" placeholder="Subplot Number" required="required" disabled="disabled" />
+                    </div>
+
+                    <div class="">
+                        <label for="treeorliana">Tree or Liana (T/L)</label>
+                        <select id="treeorliana" style="width: 305px" disabled="disabled">
+                            <option value="T">Tree</option>
+                            <option value="L">Liana</option>
+                        </select>
+
+                    </div>
+                    <div class="">
+                        <label for="samplingunitid">Sampling Unit ID</label>
+                        <input id="samplingunitid" type="text" onchange="checksuid()" placeholder="Sampling Unit ID" readonly="readonly" disabled="disabled">
+                    </div>
+
+
+                    <div class="">
+                        <label for="xsofstakeposition">Xs</label>
+                        <input id="xsofstakeposition" type="text" onchange="checkxsposition()" placeholder="Xs Stake Position" required="required" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="ysofstakeposition">Ys</label>
+                        <input id="ysofstakeposition" type="text" onchange="checkysposition()" placeholder="Ys Stake Position" required="required" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="distance">Distance(m)</label>
+                        <input id="distance" type="text" onchange="checkdistance()" placeholder="Distance" required="required" disabled="disabled">
+                    </div>
+
+                    <div class="">
+                        <label for="bearing">Bearing</label>
+                        <input id="bearing" type="text" onchange="checkbearing()" placeholder="Bearing" required="required" disabled="disabled">
+                    </div>
+
+                    <div class="">
+                        <label for="plotxcoord">Plot X Coord</label>
+                        <input id="plotxcoord" type="text" placeholder="Plot X Coord" onchange="checkplotx()" disabled="disabled">
+                    </div>
+                </div>
+                <div class="formcolumn">
+                    <h2 style="visibility: hidden; padding-top: 0px">-</h2>
+                    <div class="">
+                        <label for="plotycoord">Plot Y Coord</label>
+                        <input id="plotycoord" type="text" placeholder="Plot Y Coord" onchange="checkploty()" disabled="disabled">
+                    </div>
+
+
+                    <div class="">
+                        <label for="yearofcensus">Year</label>
+                        <input id="yearofcensus" type="text" placeholder="Year of Census" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="monthofcensus">Month</label>
+                        <input id="monthofcensus" type="text" placeholder="Month of Census" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="dayofcensus">Day</label>
+                        <input id="dayofcensus" type="text" placeholder="Day of Census" disabled="disabled">
+                    </div>
+
+                    <div class="">
+                        <label for="family">Family</label>
+                        <input id="family" type="text" onchange="checkfamily()" placeholder="Family" required="required" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="genus">Genus</label>
+                        <input id="genus" type="text" onchange="checkgenus()" placeholder="Genus" disabled="disabled">
+                    </div>
+                    <div class="">
+                        <label for="species">Species</label>
+                        <input id="species" type="text" placeholder="Species" onchange="checkspecies()" disabled="disabled">
+                    </div>
+
+                    <div class="">
+                        <label for="locationcode">Location Code</label>
+                        <input id="locationcode" type="text" placeholder="Location Code" onchange="checklocationcode()">
+                    </div>
+                    <div class="">
+                        <label for="diameter">Diameter (cm)</label>
+                        <input id="diameter" type="text" placeholder="Diameter (cm)" onchange="checkdiameter()" required="required">
+                    </div>
+                </div>
+                <div class="formcolumn">
+                    <h2 style="visibility: hidden">-</h2>
+                    <div class="">
+                        <label for="pomheight">POM Height (m)</label>
+                        <input id="pomheight" type="text" placeholder="POM Height (m)" onchange="checkpomheight()" required="required">
+                    </div>
+
+                    <div class="">
+                        <label for="conditioncodes">Condition Codes</label>
+                        <input id="conditioncodes" type="text" placeholder="Condition Codes" onfocus="viewconditioncodes()" readonly="readonly">
+                    </div>
+
+
+
+                    <div class="">
+                        <label for="ndhoption">New Diamter and POM Height?</label>
+                        <input type="radio" name="ndhselection" value="1" onchange="ndhoption(1)">Yes
+                        <input type="radio" name="ndhselection" value="0" onchange="ndhoption(0)" checked="checked">No
+                    </div>
+                    <div class="">
+                        <label for="newdiameter" id="newdiameterdiv">New Diameter (cm)</label>
+                        <input id="newdiameter" type="hidden" placeholder="New Diameter (cm)" onchange="checkndiameter()">
+                    </div>
+                    <div class="">
+                        <label for="newpomheight" id="newpomheightdiv">New POM Height(m)</label>
+                        <input id="newpomheight" type="hidden" placeholder="New POM Height(m)" onchange="checknpomheight()">
+                    </div>
+                    <div class="">
+                        <label for="deadcodes">Dead codes</label>
+                        <input id="deadcodes" type="text" placeholder="Dead codes" onfocus="viewdeadcodes()" readonly="readonly">
+                    </div>
+
+                    <div class="">
+                        <label for="voucher">Voucher</label>
+                        <input id="voucher" type="text" placeholder="Voucher" onchange="checkvoucher()">
+                    </div>
+                    <div class="">
+                        <label for="samplingperiod">Sampling Period</label>
+                        <input id="samplingperiod" type="text" placeholder="Sampling Period (YYYY.PP)" onchange="checksamplingperiod()">
+                    </div>
+                    <div class="">
+                        <label for="notes">Notes</label>
+                        <input id="notes" type="text" placeholder="Notes" onchange="checknotes()">
+                    </div>
+
+                    <!-- <div class="">
+                        <label>
+                            <h3>Person Measuring</h3>
+                        </label>
+                    </div> -->
+                </div>
+                <div style="clear: both; height: 0;"></div>
+
+            </form>
+            <div class="formbuttons">
+                <div id="backbutton">
+                    <button onclick="history.back()" type="button">Back</button>
+                </div>
+                <div id="clearbutton">
+                    <button onclick="document.getElementById('contactform').reset()">Clear</button>
+                </div>
+                <div id="nextbutton">
+                    <button id="saveform" onclick="saveData()">Save</button>
+                </div>
+            </div>
+
+            <div style="clear: both; height: 0;"></div>
+        </div>
+        <!-- /dataForm -->
+        <div id="footer"></div>
+
+        <!-- /footer -->
+    </div>
+    <!-- /page -->
+</body>
+</html>
+
+<div id="conditionselection" style="visibility: hidden; position: absolute">
+
+    <h3>Please select all the Condition Codes that apply :</h3>
+    <div>
+        <input type="checkbox" id="opt1" value="B">
+        <label for="opt1"><span></span>Buttresses (B)</label>
+        <p></p>
+        <input type="checkbox" id="opt2" value="C">
+        <label for="opt2">Stilt Roots (C)</label>
+        <p></p>
+        <input type="checkbox" id="opt3" value="D">
+        <label for="opt3"><span></span>Damaged or Deformed (D)</label>
+        <p></p>
+        <input type="checkbox" id="opt4" value="E">
+        <label for="opt4">Estimated Diameter (E)</label>
+        <p></p>
+        <input type="checkbox" id="opt5" value="F">
+        <label for="opt5">Fluted (F)</label>
+        <p></p>
+        <input type="checkbox" id="opt6" value="G">
+        <label for="opt7">Prostrate (G)</label>
+        <p></p>
+        <input type="checkbox" id="opt7" value="H">
+        <label for="opt7">Branched Stem (H)</label>
+        <p></p>
+        <input type="checkbox" id="opt8" value="I">
+        <label for="opt8">Uprooted (I)</label>
+        <p></p>
+        <input type="checkbox" id="opt9" value="J">
+        <label for="opt9">Inclined (J)</label>
+        <p></p>
+        <input type="checkbox" id="opt10" value="K">
+        <label for="opt10">Dead (K)</label>
+        <p></p>
+    </div>
+    <div>
+        <input type="checkbox" id="opt11" value="L">
+        <label for="opt11">Ladder Used (L)</label>
+        <p></p>
+        <input type="checkbox" id="opt12" value="N">
+        <label for="opt12">Stem with Regrowth (N)</label>
+        <p></p>
+        <input type="checkbox" id="opt13" value="O">
+        <label for="Broken at the Base">Broken at the Base (O)</label>
+        <p></p>
+        <input type="checkbox" id="opt14" value="P">
+        <label for="opt14">Broken at the Stem (P)</label>
+        <p></p>
+        <input type="checkbox" id="opt15" value="R">
+        <label for="Partial Crown Loss">Partial Crown Loss (R)</label>
+        <p></p>
+        <input type="checkbox" id="opt16" value="S">
+        <label for="opt16">Missing Bark (S)</label>
+        <p></p>
+        <input type="checkbox" id="opt17" value="T">
+        <label for="opt17">Stem Dying (T)</label>
+        <p></p>
+        <input type="checkbox" id="opt18" value="U">
+        <label for="opt18">Stem re-measured (U)</label>
+        <p></p>
+        <input type="checkbox" id="opt19" value="V">
+        <label for="opt19">Current measurement less than last yr (V)</label>
+        <p></p>
+        <input type="checkbox" id="opt20" value="W">
+        <label for="opt20">Non-cylindrical flattened stem (W)</label>
+        <p></p>
+    </div>
+    <input type="button" onclick="conditioncodeinsert()" value="Done">
+    <input type="button" onclick="removeconditioninsert()" value="Close" />
+</div>
+<div id="deadselection" style="visibility: hidden; position: absolute">
+
+    <h3>Please select all the Dead Codes that apply :</h3>
+    <div>
+        <input type="checkbox" id="Checkbox1" value="A">
+        <label for="opt1"><span></span>Standing (A)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox2" value="B">
+        <label for="opt2">Broken (Snapped Trunk) (B)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox3" value="C">
+        <label for="opt3"><span></span>Uprooted (C)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox4" value="D">
+        <label for="opt4">Standing or broken, probably standing (D) </label>
+        <p></p>
+        <input type="checkbox" id="Checkbox5" value="E">
+        <label for="opt5">Standing or Broken, probably broken (E)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox6" value="F">
+        <label for="opt7">Standing or Broken (F)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox7" value="G">
+        <label for="opt7">Broken or Uprooted, probably uprooted (G)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox8" value="H">
+        <label for="opt8">Broken or Uprooted, probably broken (H)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox9" value="I">
+        <label for="opt9">Broken or Uprooted (I)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox10" value="J">
+        <label for="opt10">Anthropogenic (J)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox11" value="K">
+        <label for="opt10">Vanished (K)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox12" value="L">
+        <label for="opt10">Presumed Dead (L)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox13" value="M">
+        <label for="opt10">Reason for tree death not specified (M)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox14" value="N">
+        <label for="opt10">Burnt (N)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox15" value="0">
+        <label for="opt10">Lightning (O)</label>
+        <p></p>
+    </div>
+    <div>
+        <input type="checkbox" id="Checkbox16" value="P">
+        <label for="opt11">Died Alone (P)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox17" value="Q">
+        <label for="opt12">One of multiple deaths (Q)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox18" value="R">
+        <label for="Broken at the Base">Died alone or one of multiple deaths (R)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox19" value="S">
+        <label for="opt14">Unknown whether killed or killer (S)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox20" value="T">
+        <label for="Partial Crown Loss">Killer (T)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox21" value="U">
+        <label for="opt16">Killed, no more information (U)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox22" value="V">
+        <label for="opt17">Killed by tree that died broken (V)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox23" value="W">
+        <label for="opt18">Killed by another tree that uprooted (W)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox24" value="X">
+        <label for="opt19">Killed by branches that fell from dead standing tree (X)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox25" value="Y">
+        <label for="opt20">Killed by branches that fell from living tree (Y)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox26" value="Z">
+        <label for="opt18">Killed by strangler (Z)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox27" value="2">
+        <label for="opt19">Killed by liana (2)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox28" value="3">
+        <label for="opt20">Killed by strangler/liana weight (3)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox29" value="4">
+        <label for="opt20">Killed by strangler/liana competition (4)</label>
+        <p></p>
+        <input type="checkbox" id="Checkbox30" value="4" style="visibility: hidden">
+        <label for="opt20" style="visibility: visible"></label>
+        <p></p>
+    </div>
+    <input type="button" onclick="deadcodeinsert()" value="Done">
+    <input type="button" onclick="removedeadinsert()" value="Close" />
+</div>
+
+<div>
+
+    <form>
+        <input type="text" id="tlc" />
+        <input type="text" id="td" />
+        <input type="text" id="tph" />
+        <input type="text" id="tcc" />
+        <input type="text" id="tdc" />
+        <input type="text" id="tv" />
+        <input type="text" id="tn" />
+
+
+
+    </form>
+
+</div>

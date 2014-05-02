@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!--Validate.js includes all the validation functions-->
+    <script src="/js/validate.js"></script>
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+
+    <!-- IDBStore wrapper -->
+    <script src="/js/idbstore.js"></script>
+
+    <!-- Census Store functions -->
+    <script src="/js/vegcensusstore.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/forms.css" rel="stylesheet" />
+    <link href="/css/columnform.css" rel="stylesheet" />
+    <link href="/css/font_instal.css" rel="stylesheet" />
+
+    <script type="text/javascript" charset="utf-8">
+        function showprogress() {
+            document.getElementById("importprogressbar").style.visibility = "visible";
+
+            setTimeout(function () { loadData(); }, 1000);
+
+        }
+        /**
+     * This function cancels the import process by clearing the forms in the session 
+     * storage and redirects to home page.
+     */
+        function cancelImport() {
+            window.sessionStorage.removeItem("importedForms");
+            window.location.href = "index.html";
+        }
+
+        function logTimeMsg(str) {
+            /*
+            var tmsg = window.sessionStorage.getItem("timeMsg");
+            if (tmsg != null) {
+                tmsg += "\n" + str + " ms";
+            }
+            else {
+                tmsg = str + " ms";
+            }
+            window.sessionStorage.setItem("timeMsg", tmsg);*/
+        }
+
+        /**
+         * This function is the onload handler that displays the table of imported 
+         * forms.
+         */
+        function loadData() {
+            var start = Date.now();
+            var formsJson = window.sessionStorage.getItem("importedForms");
+            var forms = JSON.parse(formsJson);
+            logTimeMsg("In display imported forms: Time for reading forms from session: " + (Date.now() - start));
+            if (forms == null) {
+                alert("Import failed!");
+                return;
+            }
+
+            var fieldNames = new Array("samplingunitid", "sitenumber", "plotnumber", "subplotnumber", "indnumber", "yearofcensus",
+                                       "monthofcensus", "dayofcensus");
+            var displayNames = {};
+            displayNames["samplingunitid"] = "Sampling Unit ID";
+            displayNames["sitenumber"] = "Site Number";
+            displayNames["plotnumber"] = "Plot Number";
+            displayNames["subplotnumber"] = "Sub-plot Number";
+            displayNames["indnumber"] = "Individual Number";
+            displayNames["yearofcensus"] = "Year of Census";
+            displayNames["monthofcensus"] = "Month of Census";
+            displayNames["dayofcensus"] = "Day of Census";
+
+            start = Date.now();
+            var importStatusJson = window.sessionStorage.getItem("importStatus");
+            var importStatus = JSON.parse(importStatusJson);
+            if (importStatus == null) {
+                alert("No import status info!");
+                return;
+            }
+
+            var importDataIssuesJson = window.sessionStorage.getItem("importDataIssues");
+            var importDataIssues = JSON.parse(importDataIssuesJson);
+
+            var fieldNames1 = new Array("filename", "fileimportstatus", "dataissues");
+            var displayNames1 = {};
+            displayNames1["filename"] = "File Name";
+            displayNames1["fileimportstatus"] = "File Import Status";
+            displayNames1["dataissues"] = "Data Issues";
+            logTimeMsg("In display imported forms: Time for reading status from session: " + (Date.now() - start));
+
+
+            /***********************Table1************************/
+            var table1Contents = "";
+
+            //Table Headings
+            table1Contents += "<TR>";
+            for (i = 0; i < fieldNames1.length; i++) {
+                table1Contents += "<TH class=\"table-1 th\">" + displayNames1[fieldNames1[i]] + "</TH>";
+            }
+            table1Contents += "</TR>";
+
+            //Table1 Data
+            for (var file in importStatus) {
+                table1Contents += "<TR>"
+                table1Contents += "<TD>";
+                var key = file;
+                table1Contents += key;
+                table1Contents += "</TD>";
+
+                table1Contents += "<TD>";
+                var value = importStatus[key];
+                table1Contents += value;
+                table1Contents += "</TD>";
+
+                var dataIssues = importDataIssues[key];
+                var invalidPlotXPlotYCount = dataIssues["invalidPlotXPlotYCount"];
+
+                if (invalidPlotXPlotYCount > 0) {
+                    //document.getElementById("saveButton").disabled = true;
+                    document.getElementById("exportInvalidButton").disabled = false;
+                }
+
+                var dataIssuesMsg = invalidPlotXPlotYCount > 0 ?
+                    invalidPlotXPlotYCount + " records have invalid/missing plotX,plotY values" : "None";
+                table1Contents += "<TD>" + dataIssuesMsg + "</TD>";
+
+                table1Contents += "</TR>";
+            }
+
+            var table1 = document.getElementById("table-1");
+            table1.innerHTML = table1Contents;
+
+            /***********************Table2************************/
+            start = Date.now();
+            logTimeMsg("Time for displaying table: " + (Date.now() - start));
+
+            //var importStatusJson = window.sessionStorage.getItem("importStatus");
+            //console.log(importStatusJson);
+            document.getElementById("importprogressbar").style.visibility = "hidden";
+        }//End of loadData()
+
+
+        /**
+         * This function saves the imported forms from session storage to indexedDB datastore
+         *  
+         */
+
+        function saveForms() {
+            document.getElementById("saveButton").disabled = true;
+            document.getElementById("savingprogressbar").style.visibility = "visible";
+
+            var formsJson = window.sessionStorage.getItem("importedForms");
+            var forms = JSON.parse(formsJson);
+            var importedFormsCounter = 0;
+
+            // callback for successful save of a given form(putForm)
+            var successCallback = function (id) {
+                importedFormsCounter++;
+                //console.log("form saved:" + id);
+                if (importedFormsCounter == forms.length) {
+                    logTimeMsg("End time for saving forms to store:" + Date.now());
+                    window.sessionStorage.removeItem("importedForms");
+                    alert("Imported " + importedFormsCounter + " records successfully\n");
+                    window.sessionStorage.clear();
+                    //alert(window.sessionStorage.getItem("timeMsg"));
+                    console.log("Done saving " + importedFormsCounter + " forms");
+                    window.location.href = "index.html";
+                }
+            }
+
+            // callback for error in saving a given form(putForm)
+            var errorCallback = function (error) {
+                alert("Imported form could not be saved!", error);
+            }
+
+            // callback for indexedDb initialization
+            var onStoreReady = function () {
+                //Added to clear existing forms/records on tablet
+                var start = Date.now();
+                clearFormsStore();
+                logTimeMsg("Time for clearing data store: " + (Date.now() - start));
+                logTimeMsg("Begin time for saving forms to store: " + Date.now());
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    // save the form in indexedDB store
+                    form["isLocalForm"] = "0";
+                    putForm(form, successCallback, errorCallback);
+                }
+            }
+
+            // initialize indexedDB store
+            initFormsStore(onStoreReady);
+        } // End of saveForms()
+
+        function exportInvalidRecords(file) {
+            file.openAsync(Windows.Storage.FileAccessMode.readWrite).then(function (stream) {
+                writer = new Windows.Storage.Streams.DataWriter(stream.getOutputStreamAt(0));
+                var importStatusJson = window.sessionStorage.getItem("importStatus");
+                var importStatus = JSON.parse(importStatusJson);
+                if (importStatus != null) {
+                    var importDataIssuesJson = window.sessionStorage.getItem("importDataIssues");
+                    var importDataIssues = JSON.parse(importDataIssuesJson);
+                    for (var file in importStatus) {
+                        var dataIssues = importDataIssues[file];
+                        var invalidPlotXPlotYForms = dataIssues["invalidPlotXPlotYForms"];
+                        for (var suid in invalidPlotXPlotYForms) {
+                            writer.writeString(suid + "\n");
+                        }
+                    }
+                }
+                return writer.storeAsync();
+            }).then(function () {
+                console.log("Done writing");
+                return writer.flushAsync();
+            }).done(function () {
+                writer.close();
+                Windows.Storage.CachedFileManager.completeUpdatesAsync(file).done(function (updateStatus) {
+                    if (updateStatus == Windows.Storage.Provider.FileUpdateStatus.complete) {
+                        alert("Finished exporting invalid records to " + file.name + " successfully");
+                    }
+                    else {
+                        alert("Export failed!. Error saving to " + file.name);
+                    }
+                });
+            });
+        }
+
+        function exportInvalidButtonClickHandler() {
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            // Dropdown of file types the user can save the file as
+            savePicker.fileTypeChoices.insert("txt", [".txt"]);
+            // Default file name if the user does not type one in or select a file to replace
+            savePicker.suggestedFileName = "invalid_records";
+
+            var onDialogClose = function (file) {
+                if (file) {
+                    exportInvalidRecords(file);
+                }
+                else {
+                    console.log("Export was cancelled");
+                }
+            }
+
+            //show the dialog and register callback
+            savePicker.pickSaveFileAsync().then(onDialogClose);
+        }
+
+    </script>
+
+</head>
+
+<body onload="showprogress()">
+
+    <div id="wrapper">
+
+            <div class="title">
+          <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+                <!--<script>
+                currentTime();
+            </script>-->
+            </div>
+        </div>
+        <div style="clear: both; height: 0;"></div>
+        <!-- /header -->
+
+        <div id="table1content">
+            <div>
+            <table id="table-1">
+            </table>
+            </div>
+        </div>
+        <div class="formbuttons">
+
+            <div id="twobutton_cancel">
+                <button onclick="cancelImport()" type="button">Cancel</button>
+            </div>
+            
+            <div id="exportinvalid_button">
+                <button id="exportInvalidButton" onclick="exportInvalidButtonClickHandler()" type="button">Export Invalid Data</button>
+            </div>
+            <div id="twobutton_next">
+                <button id="saveButton" onclick="saveForms()" type="button">Save</button>
+            </div>
+
+
+        </div>
+        <div id="savingprogressbar" style="visibility: hidden;">
+            <img id="progressBar" src="/images/progress_bar_small.gif" />
+        </div>
+        <div id="importprogressbar">
+            <img id="Img1" src="/images/progress_bar_small.gif" />
+            <h3>Importing large files can take</h3>
+            <h3>a few minutes.</h3>
+        </div>
+        <div id="footer">
+        </div>
+        <!-- /footer -->
+
+ 
+
+    </div>
+    <!-- /page -->
+</body>
+</html>

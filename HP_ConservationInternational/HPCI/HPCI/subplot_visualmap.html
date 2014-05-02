@@ -1,0 +1,615 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+
+
+    <!-- IDBStore wrapper -->
+    <script src="/js/idbstore.js"></script>
+
+
+    <!-- Census Store functions -->
+    <script src="/js/vegcensusstore.js"></script>
+
+    <script src="/js/utils.js"></script>
+
+    <script src="/js/metadatacommon.js"></script>
+    <script src="/js/censusCommon.js"></script>
+
+    <!-- Form Validation -->
+    <script src="/js/validate.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <!--<link href="/css/forms.css" rel="stylesheet" />-->
+    <link href="/css/columnform.css" rel="stylesheet" />
+    <link href="/css/validate.css" rel="stylesheet" />
+     <link href="/css/font_instal.css" rel="stylesheet" type="text/css">
+
+    <style type="text/css">
+        ul,li  {margin:0; padding:0;}
+        ul {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+            top: 1px;
+            display: table;
+            border-left: 1px solid #0096d6;
+            border-bottom: 1px solid #0096d6;
+        }
+
+            ul li {
+                float: left;
+               
+            }
+
+                ul li a {
+                    background: #d5d5d5;
+                    color: #222;
+                    display: block;
+                    padding: 6px 15px;
+                    text-decoration: none;
+                    border-right: 1px solid #0096d6; 
+                    border-top: 1px solid #0096d6;
+                    padding-left:25px;
+                    padding-right:25px;
+                }
+
+                    ul li a.selected {
+                        border-bottom: 1px solid #fff;
+                        color: #344385;
+                        background: #fff;
+                    }
+
+        #navigation {
+            width: 60.5%;
+            margin: 0 auto;
+            padding-top:10px;
+        }
+
+        #content {
+            width: 70%;
+            margin: 0 auto;
+            height: 70%;
+            background: #fff;
+            border: 1px solid #0096d6;
+            z-index: 1;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+
+
+    <script src="/js/raphael-min.js"></script>
+    <script src="/js/idbstore.js"></script>
+    <script src="/js/vegcensusstore.js"></script>
+    <script src="/js/utils.js"></script>
+
+    <script src="/js/MSGestures.js"></script>
+
+    <script>
+        
+        var paper;
+        var zoomFactor = 1.0;
+        var scaleFactor = 32;
+        var subPlotLength = (20 * scaleFactor);
+        var X = 0;
+        var Y = 0;
+
+        /**
+        * Function for handling clicks on the various tabs in subplot visual map
+        *
+        * @param filter the filter parameter corresponding to the tab clicked
+        */
+        function tabClickHandler(filter) {
+            var siteNumber = getURLParameter('siteNumber');
+            var plotNumber = getURLParameter('plotNumber');
+            var subplotNumber = getURLParameter('subplotNumber');
+            var url = "subplot_visualmap.html?siteNumber=" + siteNumber + "&plotNumber=" + plotNumber + 
+                      "&subplotNumber=" + subplotNumber + "&mapDisplayFilter=" + filter;
+            window.location.href = url;
+        }
+
+        /**
+        * Function for extracting the filter url parameter 
+        * 
+        * @return the filter parameter from the url or "ALL" by default
+        */
+        function getMapDisplayFilter() {
+            var ret = getURLParameter("mapDisplayFilter");
+            if (ret == null) {
+                ret = "ALL";
+            }
+            return ret;
+        }
+
+        /**
+         * Helper function for resetting the subplot view 
+         */ 
+        function resetSubplotView() {
+            if (paper != null) {
+                paper.remove();
+            }
+            zoomFactor = 1.0;
+            X = 0;
+            Y = 0;
+        }
+
+      /**
+       * Helper function for debugging purpose
+       */
+        function formatMessage(str, len) {
+            var formattedMessage = null;
+            if (str != null) {
+                var formattedMessage = str.toString();
+                formattedMessage += " ";
+                for (var idx = formattedMessage.length; idx < len; idx++) {
+                    formattedMessage += " ";
+                }
+            }
+            return formattedMessage;
+        }
+
+        /**
+         * Helper function for debugging purpose
+         */
+        function printEvent(evt) {
+                var str =
+                    formatMessage(evt.type, 16) +
+                    formatMessage(evt.screenX, 6) +
+                    formatMessage(evt.screenY, 6) +
+                    formatMessage(evt.clientX.toFixed(0), 6) +
+                    formatMessage(evt.clientY.toFixed(0), 6) +
+                    formatMessage(evt.translationX.toFixed(2), 8) +
+                    formatMessage(evt.translationY.toFixed(2), 8) +
+                    formatMessage(evt.scale.toFixed(2), 7) +
+                    formatMessage(evt.rotation.toFixed(2), 7) +
+                    formatMessage(evt.detail, 5) +
+                    formatMessage(evt.currentTarget.id, 10) +
+                    formatMessage(evt.srcElement.id, 10) +
+                    "\n";
+                console.log(str);
+            }
+
+            /**
+             * Event handler for swipe gestures
+             */
+            function handleSwipeEvent(e) {
+                //console.log("Received event:" + e);
+                //printEvent(e);
+                if (e.translationX.toFixed(2) < 0) {
+                    panLeft();
+                }
+                else if (e.translationX.toFixed(2) > 0) {
+                    panRight();
+                }
+
+                if (e.translationY.toFixed(2) < 0) {
+                    panUp();
+                }
+                if (e.translationY.toFixed(2) > 0) {
+                    panDown();
+                }
+            }
+
+            /**
+             * Event handler for pinch gesture
+             */
+            function handlePinchEvent(e) {
+                if (e.scale.toFixed(2) > 1) {
+                    zoomIn();
+                }
+                else {
+                    zoomOut();
+                }
+                console.log("Received event:" + e);
+                //printEvent(e);
+            }
+
+            /**
+             * Function for registering pan and zoom gestures
+             */
+            function addZoomPanHandler() {
+                var gestures = new MSGestures();
+                var target = document.getElementById("subplotDiv")
+                gestures.addEventListener(target, "swipe", handleSwipeEvent);
+                gestures.addEventListener(target, "pinch", handlePinchEvent);
+            }
+
+            /**
+              * Helper function to identify the bottom-left corner for a given subplot
+              *
+              * @param subplotNumber input subplot number for which coordinates of
+              *                      bottom-left corner is calculated
+              * @return coordinates of bottom-left corner
+              *                      
+              */
+            function getSubplotBottomLeftCorner(subplotNumber) {
+                //table which maps a given subplot number to coordinates of its bottom left corner within the plot
+                var table = {
+                    1: [0, 0], 2: [0, 20], 3: [0, 40], 4: [0, 60], 5: [0, 80],
+                    6: [20, 80], 7: [20, 60], 8: [20, 40], 9: [20, 20], 10: [20, 0],
+                    11: [40, 0], 12: [40, 20], 13: [40, 40], 14: [40, 60], 15: [40, 80],
+                    16: [60, 80], 17: [60, 60], 18: [60, 40], 19: [60, 20], 20: [60, 0],
+                    21: [80, 0], 22: [80, 20], 23: [80, 40], 24: [80, 60], 25: [80, 80]
+                };
+
+                return table[subplotNumber];
+            }
+
+            /**
+            * This function gets the coordinates of a given subplot with the top-left
+            * corner as origin
+            *@param plotNumber plot number
+            *@param subplotNumber subplot number
+            *@param plotX X-coordinate of the location of a stem within the plot
+            *@param plotY Y-coordinate of the location of a stem within the plot
+            *
+            *@return the x,y coordinates as a map of the stem within the subplot with top 
+            *left corner as the origin
+            */
+            function getSubplotCoordinates(plotNumber, subplotNumber, plotX, plotY) {
+                //get the coordinates of bottom left corner of subplot
+                var subplotBottomLeftCorner = getSubplotBottomLeftCorner(subplotNumber);
+
+                //translate plotX, plotY to x,y within subplot with bottom left corner of subplot as origin
+                var subPlotX = plotX - subplotBottomLeftCorner[0];
+                var subPlotY = plotY - subplotBottomLeftCorner[1];
+
+                //translate x,y using top left corner of subplot as origin
+                subPlotY = 20 - subPlotY;
+
+                return { "x": subPlotX, "y": subPlotY };
+            }
+
+            /**
+             * This function is called when the subplot visual map is loaded.
+             * Reads the rcords from database and diplays them on the visual map
+             *
+             */
+            function onLoadHandler() {
+                var siteNumber = getURLParameter('siteNumber');
+                if (siteNumber != null) {
+                    siteNumber = siteNumber.toUpperCase();
+                }
+                var plotNumber = getURLParameter('plotNumber');
+                var subplotNumber = getURLParameter('subplotNumber');
+                window.sessionStorage.removeItem("clickedSamplingUnitID");
+
+                var siteCodeElement = document.getElementById("siteCodeDiv");
+                siteCodeElement.innerHTML = "<p><b> Site Code:</b> " + siteNumber + "</p>";
+                var plotNumberElement = document.getElementById("plotNumberDiv");
+                plotNumberElement.innerHTML = "<p><b> Plot Number:</b> " + plotNumber + "</p>";
+                var subplotNumberElement = document.getElementById("subplotNumberDiv");
+                subplotNumberElement.innerHTML = "<p><b>Subplot Number:</b> " + subplotNumber + "</p>";
+
+                var onReady = function () {
+                    loadTableData(siteNumber, plotNumber, subplotNumber);
+                }
+                initFormsStore(onReady);
+            }
+            
+            /**
+            * Helper function to get a count of edited records corresponding to their 
+            * plotX and plotY coordinates 
+            */
+            function getLocallyEditedCount(forms) {
+                locallyEditedStemCount = {};
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    var plotX = form["plotxcoord"];
+                    var plotY = form["plotycoord"];
+                    var locationKey = plotX + "_" + plotY;
+                    
+                    if (locationKey in locallyEditedStemCount && form["isEditedOnTablet"] == 1) {
+                        locallyEditedStemCount[locationKey]++;
+                    }
+                    else if (form["isEditedOnTablet"] == 1) {
+                        locallyEditedStemCount[locationKey] = 1;
+                    }
+                    else {
+                        locallyEditedStemCount[locationKey] = 0;
+                    }
+                }
+                return locallyEditedStemCount;
+            }
+
+            /**
+             * Helper function to get a count of visually overlapping stems 
+             * due to the same plotX and plotY coordinates 
+             */
+            function getOverlappingStemCount(forms) {
+                overlappingStemCount = {};
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    var plotX = form["plotxcoord"];
+                    var plotY = form["plotycoord"];
+                    var locationKey = plotX + "_" + plotY;
+                    if (locationKey in overlappingStemCount) {
+                        overlappingStemCount[locationKey]++;
+                    }
+                    else {
+                        overlappingStemCount[locationKey] = 1;
+                    }
+                }
+                return overlappingStemCount;
+            }
+
+            /**
+             * Helper function to visually draw the result set of records based on the
+             * selected tab. Uses RaphaelJS library to draw the visual map and its elements
+             */
+            function drawTable(forms) {
+                resetSubplotView();
+                var plotNumber = getURLParameter('plotNumber');
+                var subplotNumber = getURLParameter('subplotNumber');
+                var mapDisplayFilter = getMapDisplayFilter();
+                var stemCircleRadius = 13.5;
+                var overlapDiff = 1.5;
+                document.getElementById(mapDisplayFilter).className = "selected";
+                paper = Raphael(document.getElementById("subplotDiv"), subPlotLength, subPlotLength);
+                paper.setViewBox(0, 0, subPlotLength, subPlotLength);
+                addZoomPanHandler();
+
+                var subplot = paper.rect(0, 0, subPlotLength, subPlotLength);
+                subplot.attr("fill", "white");
+                subplot.attr("stroke", "#0096d6");
+
+                var xAxis = paper.rect(0, subPlotLength / 2, subPlotLength, 0.5);
+                var yAxis = paper.rect(subPlotLength / 2, 0, 0.5, subPlotLength);
+                xAxis.attr("stroke", "#0096d6");
+                yAxis.attr("stroke", "#0096d6");
+
+                var overlappingStemCount = getOverlappingStemCount(forms);
+
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    var suid = form["samplingunitid"];
+                    var label = suid.substring(0, 2) == "VT" ? "T" : "L";
+                    var isEditedLocally = form["isEditedOnTablet"];
+                    var plotX = form["plotxcoord"];
+                    var plotY = form["plotycoord"];
+                    var locationKey = plotX + "_" + plotY;
+                    
+                    if (mapDisplayFilter == "TREES" && label == "L") {
+                        continue;
+                    }
+                    else if (mapDisplayFilter == "LIANAS" && label == "T") {
+                        continue;
+                    }
+                    else if (mapDisplayFilter == "PENDING" && isEditedLocally == 1) {
+                        continue;
+                    }
+                   
+                    if (overlappingStemCount[locationKey] > 1) {
+                        plotX = parseFloat(plotX) + (overlapDiff * Math.random());
+                        plotY = parseFloat(plotY) + (overlapDiff * Math.random());
+                    }
+                    
+                    var subPlotCoord = getSubplotCoordinates(plotNumber, subplotNumber, plotX, plotY);
+
+                    var stemCircle = paper.circle(subPlotCoord["x"] * scaleFactor, subPlotCoord["y"] * scaleFactor,
+                        stemCircleRadius);
+                    stemCircle.attr("stroke", "black");
+                  
+                    if(isEditedLocally == 1){
+                        stemCircle.attr("fill", "limegreen");
+                    }
+                    else {
+                        stemCircle.attr("fill", "#dc143c");
+                    }
+
+                    function clickHandler() {
+                        var form = this.data("form");
+                        var target = (form["isLocalForm"] == 1 ? "censusform.html" :
+                                     "recensusform.html");
+                        target += "?suid=" + form["samplingunitid"];
+                        window.location.href = target;
+                    }
+
+                    var txt = paper.text((subPlotCoord["x"] - .19) * scaleFactor, subPlotCoord["y"] * scaleFactor, label).attr({ 'text-anchor': 'start' });
+                    txt.attr({ "font-size": 20, "stroke": "black" });
+                    txt.data("form", form);
+                    txt.click(clickHandler);
+
+                    stemCircle.data("form", form);
+                    stemCircle.click(clickHandler);
+                }
+
+                showRecensusProgress(forms);
+            }
+            
+           /**
+            * This function shows a progress bar based on the numebr of records 
+            * for which census has been performed
+            */
+            function showRecensusProgress(forms) {
+                var numForms = forms.length;
+                var numRecensusForms = 0;
+                for (i = 0; i < forms.length; i++) {
+                    var form = forms[i];
+                    var isEditedLocally = form["isEditedOnTablet"];
+                    if (isEditedLocally == 1) {
+                        numRecensusForms++;
+                    }
+                }
+
+                var percent;
+                var percentRounded;
+                percent = numRecensusForms / numForms;
+                percent = percent * 100;
+                percentRounded = Math.round(percent);
+                var setprogress = document.getElementById("bar");
+                setprogress.style.width = percentRounded + "%";
+                setprogress.innerHTML = "<p>" + percentRounded + "%" + "</p>";
+                document.getElementById("recensusProgressDiv").innerHTML = "<h1>" +
+                    numRecensusForms + " / " + numForms + "</h1><p>Stem(s) Completed</p>";
+            }
+         
+           /**
+            * Zooms into the visual map by setting a new view box based on a decreased zoom
+            * factor
+            */
+            function zoomIn() {
+                zoomFactor /= 1.25;
+                paper.setViewBox(0, 0, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+            /**
+             * Zooms out of the visual map by setting a new view box based on a increased zoom
+             * factor
+             */
+            function zoomOut() {
+                zoomFactor *= 1.25;
+                paper.setViewBox(0, 0, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+            /**
+            * Enables panning upwards by setting a new view box based on a new Y coordinate 
+            */
+            function panUp() {
+                Y = Y + 1;
+                paper.setViewBox(X * scaleFactor, Y * scaleFactor, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+           /**
+            * Enables panning downwards by setting a new view box based on a new Y coordinate 
+            */
+            function panDown() {
+                Y = Y - 1;
+                paper.setViewBox(X * scaleFactor, Y * scaleFactor, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+           /**
+            * Enables panning to the right by setting a new view box based on a new X coordinate 
+            *
+            */
+            function panRight() {
+                X = X - 1;
+                paper.setViewBox(X * scaleFactor, Y * scaleFactor, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+          /**
+           * Enables panning to the left by setting a new view box based on a new X coordinate 
+           *
+           */
+            function panLeft() {
+                X = X + 1;
+                paper.setViewBox(X * scaleFactor, Y * scaleFactor, subPlotLength * zoomFactor, subPlotLength * zoomFactor);
+            }
+
+            /**
+            * This helper function checks if metadata exists in session before allowing 
+            * creation of a new record
+            */
+            function resolveLinkForNewStem() {
+                var site = getURLParameter('siteNumber');
+                var plotno = getURLParameter('plotNumber');
+                var subplotno = getURLParameter('subplotNumber');
+                window.sessionStorage.setItem("subplotnumber", subplotno);
+                var key = "metadata_" + site + "_" + plotno;
+                var metadataValue = window.sessionStorage.getItem(key);
+                if (metadataValue != null) {
+                    window.location.href = "censusform.html";
+                }
+                else {
+                    alert("Unexpected error: Missing metadata information");
+                }
+            }
+
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $('#navigation ul a').click(function () {
+                $('#navigation ul a').removeClass('selected');
+                $(this).addClass('selected');
+                $('#content_changer').html('You have selected ' + $(this).html());
+            });
+        });
+</script>
+
+</head>
+<body onload="onLoadHandler()">
+    <div id="wrapper">
+          <div class="title">
+           <div id="homebutton">
+               <h1>
+                   <span>HP Earth Insights</span>
+                   Forest Inventory Tracker
+               </h1>
+                <button onclick="window.location.href='index.html'">Home</button></div>
+            <div id="elephantimage">
+               <img src="images/forestimage_t.png" alt="Conservation International Logo"  /></div>
+            
+             <div id="timestamp">
+                <img src="/images/HP_Blue_RGB_150_SM.png" alt="HP Logo" width="40" />
+                <img src="/images/CI_Logo_Standard_English_French.png" alt="Conservation International Logo" width="140" />
+                <img src="/images/logo_team.png" alt="Team Network"  width="30"/>
+            </div>
+        </div>
+        <div style="clear: both; height: 0;"></div>
+        <div id="subplotmapdata">
+            <div id="subplotInfo">
+                <div style="padding: 0;">
+                    <h2>Subplot View</h2>
+                </div>
+                <div id="siteCodeDiv" style=""></div>
+                <div id="plotNumberDiv"></div>
+                <div id="subplotNumberDiv"></div>
+                <div id="recensusProgressDiv"></div>
+                <div id="progress" class="graph" style="padding:0;"><div id="bar" style="padding:0; width:0%"></div></div>
+                <div>
+                    <button onclick="resolveLinkForNewStem()" style="">Add New Stem</button></div>
+                <div>
+                    <button onclick="window.location.href='plotview.html'" style="">Change Plot or Subplot </button>
+                </div>
+            </div>
+
+        </div>
+        <div id="subplotview">
+
+            <div id="navigation" >
+                <ul>
+                    <li><a id="ALL" onclick="tabClickHandler('ALL');">ALL</a></li>
+                    <li><a id="TREES" onclick="tabClickHandler('TREES');">TREES</a></li>
+                    <li><a id="LIANAS" onclick="tabClickHandler('LIANAS');">LIANAS</a></li>
+                    <li><a id="PENDING" onclick="tabClickHandler('PENDING');">PENDING</a></li>
+                   
+                </ul>
+            </div>
+            <div id="Div2"></div>
+            <div id="subplotDiv"></div>
+       </div>
+    </div>
+
+
+
+</body>
+</html>

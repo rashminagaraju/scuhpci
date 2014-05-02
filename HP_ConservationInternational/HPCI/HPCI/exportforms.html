@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+    <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+    <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/forms.css" rel="stylesheet" />
+    <link href="/css/columnform.css" rel="stylesheet" />
+
+
+
+    <script type="text/javascript" charset="utf-8">
+
+
+        function handle_files(files) {
+        }
+
+        function onLoadHandler() {
+            window.localStorage.clear();
+        }
+    </script>
+
+</head>
+
+<body onload="onLoadHandler()">
+
+    <div id="wrapper">
+
+        <div class="title">
+            <h2>Export Forms</h2>
+            <div id="homebutton"><button onclick="window.location.href='index.html'">Home</button></div>
+        </div>
+        <!-- /header -->
+
+        <div id="fileinsert">
+
+            <input type="file" onchange="handle_files(this.files)">
+        </div>
+    </div>
+
+    <div id="footer">
+    </div>
+    <!-- /footer -->
+
+
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>HPCI</title>
+
+    <!-- WinJS references -->
+    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+
+    <!-- HPCI references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+
+    <!-- Cordova -->
+    <script src="/js/cordova.js"></script>
+
+    <!-- CordovaWin8Foo references -->
+    <link href="/css/default.css" rel="stylesheet" />
+    <script src="/js/default.js"></script>
+    
+    <!-- Validation Functions -->
+    <script src="/js/validate.js"></script>
+
+    <!-- jQuery Mobile -->
+    <link rel="stylesheet" href="/css/jquery.mobile-1.2.1.css" />
+    <script src="/js/jquery-1.8.0-windows8-ready.js"></script>
+   <!-- <script src="/js/jquery.mobile-1.2.1.js"></script>-->
+   <!-- <script src="/js/jquery-1.9.1.min.js"></script>-->
+    
+    <!-- IDBStore wrapper -->
+    <script src="/js/idbstore.js"></script>
+
+    <!-- Census Store functions -->
+    <script src="/js/vegcensusstore.js"></script>
+
+    <!-- StyleSheet -->
+    <link href="/css/stylesheet.css" rel="stylesheet" />
+    <link href="/css/forms.css" rel="stylesheet" />
+
+
+
+</head>
+
+<body onload="">
+
+    <div id="wrapper">      
+            <div class="title">
+
+                <div id="timestamp">
+                <script>
+                    var date = new Date();
+                    year = date.getFullYear();
+                    month = date.getMonth();
+                    month = month + 1;
+                    day = date.getDate();
+                    hours = date.getHours();
+                    minutes = date.getMinutes();
+
+                    var ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                    var strTime = hours + ':' + minutes + ' ' + ampm;
+
+                    document.write(month + "/" + day + "/" + year + " - " + strTime);
+
+                </script>
+                    </div>
+                    <div><h2>Choose Census</h2></div>
+                    <div id="homebutton"><button onclick="window.location.href='index.html'">Home</button><p><br /></p></div>
+                    
+                </div>
+              
+     
+
+        <div id="mdataForm">
+           
+
+	        <form class="pure-form pure-form-aligned" action="review.html" onsubmit="">
+              
+                    <div class="pure-control-group">
+                        <label for="sitenumber">Site Number</label>
+                        <select id="sitenumber" style="width:300px">
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="pure-control-group">
+  
+                        <label for="plotnumber">Plot Number</label>
+                        <select id="plotnumber" style="width:300px">
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="pure-control-group">
+           
+                        <label for="subplot">Subplot Number</label>
+                        <select id="subplot" style="width:300px">
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                      <div class="formbuttons" style="padding-top:10%">
+
+                    <div id="backbuttonM">
+                        <button onclick="window.location.href='index.html'" type="button">Back</button>
+                    </div> 
+              
+                    <div id="nextbuttonM">
+                        <button type="submit">Next</button>
+                    </div>
+                </div>
+           
+            </form>
+
+ 		</div> <!-- /dataForm -->
+
+
+        <div id="footer">
+        </div><!-- /footer -->
+
+
+
+    </div><!-- /page -->
+</body>
+</html>
